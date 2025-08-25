@@ -9,5 +9,5 @@ export function help() {
 - \`friend\`: Generate a friend invite link
 
 **Selfcord author**: \`scaratek.dev\` (on Discord)
-**Selfbot Repo: \`https://github.com/scaratech/selfcord\``;
+**Selfbot Repo**: \`https://github.com/scaratech/selfcord\``;
 }
