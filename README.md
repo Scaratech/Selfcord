@@ -1,5 +1,5 @@
 # Selfcord
-g
+FOSS utility-focused Discord
 
 ## Features
 - [X] Message Purger
