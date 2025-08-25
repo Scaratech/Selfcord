@@ -79,6 +79,6 @@ async function purgeNumericMessages(message: Message, count: number, shadow: boo
     }
 
     if (!shadow) {
-        await message.channel.send(`**Purged ${deletedCount} messages**`);
+        await message.channel.send(`**Purged ${deletedCount} messages** `);
     }
 }
