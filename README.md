@@ -6,12 +6,14 @@ FOSS utility-focused Discord selfbot
 ## Features
 - [X] Message Purger
 - [X] Exporter
+- [X] IP Lookup
 
 ## Setup
 ```sh
 $ git clone https://github.com/scaratech/selfcord
 $ cd selfcord
 $ pnpm i
+$ pnpm build
 $ echo "TOKEN=YOUR_DISCORD_TOKEN" > .env
 $ pnpm start
 ```
