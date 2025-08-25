@@ -1,5 +1,5 @@
 # Selfcord
-FOSS Discord selfbot written using `discord.js-selfbot-v13`
+g
 
 ## Features
 - [X] Message Purger
