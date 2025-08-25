@@ -8,5 +8,6 @@ export function help() {
 - \`sh <command>\`: Execute a shell command
 - \`friend\`: Generate a friend invite link
 
-**Selfcord author**: \`scaratek.dev\` (on Discord)`;
+**Selfcord author**: \`scaratek.dev\` (on Discord)
+**Selfbot Repo: \`https://github.com/scaratech/selfcord\``;
 }
