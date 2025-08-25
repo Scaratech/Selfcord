@@ -10,11 +10,20 @@ FOSS utility-focused Discord selfbot
 - [X] Subdomain Scanner
 
 ## Setup
+### Building
 ```sh
 $ git clone https://github.com/scaratech/selfcord
 $ cd selfcord
 $ pnpm i
 $ pnpm build
-$ echo "TOKEN=YOUR_DISCORD_TOKEN" > .env
+```
+### `.env`
+Make a file called `.env` and enter:
+```
+TOKEN=YOUR_DISCORD_TOKEN
+PREFIX=$sc
+```
+### Start It
+```sh
 $ pnpm start
 ```
