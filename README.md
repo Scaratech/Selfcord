@@ -7,6 +7,7 @@ FOSS utility-focused Discord selfbot
 - [X] Message Purger
 - [X] Exporter
 - [X] IP Lookup
+- [X] Subdomain Scanner
 
 ## Setup
 ```sh

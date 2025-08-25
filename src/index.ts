@@ -1,8 +1,9 @@
 import { exporter } from "./commands/exporter.js";
 import { purger } from "./commands/purger.js";
 import { help } from "./commands/help.js";
-import { client } from "./utils/client.js";
+import { client } from "./client.js";
 import { ip } from "./commands/ip.js";
+import { sds } from "./commands/sds.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
 
@@ -51,6 +52,12 @@ async function handle(message: Message) {
         case 'ip': {
             const target = args[0];
             await ip(message, target);
+            break;
+        }
+
+        case 'sds': {
+            const target = args[0];
+            await sds(message, target);
             break;
         }
 

@@ -4,6 +4,7 @@ export function help() {
 - \`purge <num>|at [--shadow]\`: Purge your messages
 - \`export <json|txt> [--shadow]\`: Export messages to \`exports/\` folder
 - \`ip <ip>\`: Fetch info about an IP
+- \`sds <domain>\`: Find subdomains on a domain
 
 **Selfcord author**: \`scaratek.dev\` (on Discord)`;
 }

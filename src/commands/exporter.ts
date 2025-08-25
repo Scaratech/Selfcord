@@ -26,7 +26,7 @@ export async function exporter(message: Message, target: string, shadow: boolean
         }
         
         if (!shadow) {
-            await message.reply(`Starting export (${target})`);
+            await message.reply(`**Starting export (${target})...**`);
         }
 
         const all: MessageData[] = [];
@@ -73,13 +73,13 @@ export async function exporter(message: Message, target: string, shadow: boolean
         }
 
         if (!shadow) {
-            await message.reply(`Exported ${all.length} messages`);
+            await message.reply(`**Exported ${all.length} messages**`);
         }
     } catch (error) {
         console.error('Export error:', error);
 
         if (!shadow) {
-            await message.reply('Failed to export messages');
+            await message.reply('**Failed to export messages**');
         }
     }
 }

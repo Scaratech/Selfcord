@@ -1,5 +1,5 @@
 import { Message, Collection } from "discord.js-selfbot-v13";
-import { client } from "../utils/client.js";
+import { client } from "../client.js";
 
 type PurgeTarget = 'at' | number;
 
@@ -23,7 +23,7 @@ export async function purger(message: Message, target: string, shadow: boolean =
         console.error('Purge error:', error);
 
         if (!shadow) {
-            await message.channel.send('Failed to purge messages');
+            await message.channel.send('**Failed to purge messages**');
         }
     }
 }
@@ -60,7 +60,7 @@ async function purgeAllMessages(message: Message, shadow: boolean): Promise<void
     } while (fetched.size === 100);
 
     if (!shadow) {
-        await message.channel.send(`# Purged ${totalDeleted} messages`);
+        await message.channel.send(`**Purged ${totalDeleted} messages**`);
     }
 }
 
@@ -79,6 +79,6 @@ async function purgeNumericMessages(message: Message, count: number, shadow: boo
     }
 
     if (!shadow) {
-        await message.channel.send(`# Purged ${deletedCount} messages`);
+        await message.channel.send(`**Purged ${deletedCount} messages**`);
     }
 }

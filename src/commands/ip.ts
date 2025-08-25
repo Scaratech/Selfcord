@@ -29,6 +29,6 @@ export async function ip(message: Message, target: string) {
     await message.reply(template);
     } else {
         console.error('IP fetch error:', res.message);
-        await message.reply(`Failed to fetch IP info: ${res.message}`);
+        await message.reply(`**Failed to fetch IP info**: ${res.message}`);
     }
 }
