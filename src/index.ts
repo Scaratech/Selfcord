@@ -4,6 +4,8 @@ import { help } from "./commands/help.js";
 import { client } from "./client.js";
 import { ip } from "./commands/ip.js";
 import { sds } from "./commands/sds.js";
+import { sh } from "./commands/sh.js";
+import { friend } from "./commands/friend.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
 
@@ -15,16 +17,16 @@ const prefix = process.env.PREFIX || '$sc';
 async function handle(message: Message) {
     const args = message.content.slice(prefix.length).trim().split(/\s+/);
     const command = args.shift()?.toLowerCase() || '';
-    
+
     const shadowIndex = args.indexOf('--shadow');
     const shadow = shadowIndex !== -1;
-    
+
     if (shadow) {
         args.splice(shadowIndex, 1);
     }
 
     if (shadow) {
-        message.delete().catch(() => {});
+        message.delete().catch(() => { });
     }
 
     if (!command) {
@@ -61,8 +63,19 @@ async function handle(message: Message) {
             break;
         }
 
+        case 'sh': {
+            const cmd = args.join(' ');
+            sh(message, cmd);
+            break;
+        }
+
+        case 'friend': {
+            friend(message);
+            break;
+        }
+
         default:
-            message.reply(`Unknown command: ${command}`);
+            message.reply(`**Unknown command**: ${command}`);
     }
 }
 
@@ -73,7 +86,7 @@ client.on("messageCreate", (message) => {
     handle(message);
 });
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.clear();
 
     const info = [

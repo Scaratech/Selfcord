@@ -4,10 +4,12 @@ FOSS utility-focused Discord selfbot
 > Selfbots are against Discords ToS!! I am in no way responsible if your account gets terminated.
 
 ## Features
-- [X] Message Purger
-- [X] Exporter
-- [X] IP Lookup
-- [X] Subdomain Scanner
+- [X] Message purger
+- [X] DM/Channel exporter
+- [X] IP lookup
+- [X] Subdomain scanner
+- [X] Execute commands in your shell (what could EVER go wrong)
+- [X] Friend invite generator
 
 ## Setup
 ### Building
@@ -26,4 +28,5 @@ PREFIX=$sc
 ### Start It
 ```sh
 $ pnpm start
+# Run $sc help to get started
 ```

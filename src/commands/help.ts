@@ -5,6 +5,8 @@ export function help() {
 - \`export <json|txt> [--shadow]\`: Export messages to \`exports/\` folder
 - \`ip <ip>\`: Fetch info about an IP
 - \`sds <domain>\`: Find subdomains on a domain
+- \`sh <command>\`: Execute a shell command
+- \`friend\`: Generate a friend invite link
 
 **Selfcord author**: \`scaratek.dev\` (on Discord)`;
 }
