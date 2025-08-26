@@ -8,6 +8,7 @@ import { sh } from "./commands/sh.js";
 import { friend } from "./commands/friend.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
+import { sysfetch } from "./commands/sysfetch.js";
 
 dotenv.config();
 
@@ -71,6 +72,11 @@ async function handle(message: Message) {
 
         case 'friend': {
             friend(message);
+            break;
+        }
+
+        case 'sysfetch': {
+            sysfetch(message);
             break;
         }
 

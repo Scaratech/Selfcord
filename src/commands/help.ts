@@ -7,7 +7,8 @@ export function help() {
 - \`sds <domain>\`: Find subdomains on a domain
 - \`sh <command>\`: Execute a shell command
 - \`friend\`: Generate a friend invite link
+- \`sysfetch\`: Display system information
 
-**Selfcord author**: \`scaratek.dev\` (on Discord)
+**Selfcord Author**: \`scaratek.dev\` (on Discord)
 **Selfbot Repo**: \`https://github.com/scaratech/selfcord\``;
 }

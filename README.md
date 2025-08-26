@@ -10,6 +10,7 @@ FOSS utility-focused Discord selfbot
 - [X] Subdomain scanner
 - [X] Execute commands in your shell (what could EVER go wrong)
 - [X] Friend invite generator
+- [x] Sysfetch
 
 ## Setup
 ### Building
