@@ -153,12 +153,12 @@ export async function handle(message: Message) {
             const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
             const orRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
             const m = cleaned.match(orRegex);
-    
+
             if (!m) {
                 message.reply("**Error:** Invalid or command format");
                 break;
             }
-    
+
             const [, model, userPrompt, sysPrompt] = m;
 
             try {
@@ -218,8 +218,11 @@ client.on("ready", async () => {
     const info = [
         `Logged in as ${client.user?.tag}`,
         `Using prefix: ${prefix}`,
-        `OpenRouter support: ${process.env.OR_KEY ? 'Yes' : 'No'}`,
         `Shared users: ${sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None'}`
+    ];
+    const support = [
+        `OpenRouter support: ${process.env.OR_KEY ? 'Yes' : 'No'}`,
+        `GitHub Support: ${process.env.GITHUB_TOKEN ? 'Yes' : 'No'}`
     ];
 
     const width = Math.max(header.length, ...info.map(line => line.length)) + 4;
@@ -229,8 +232,14 @@ client.on("ready", async () => {
     console.log(border);
     console.log(`| ${header.padEnd(width - 4)} |`);
     console.log(separator);
+    
 
     for (const line of info) {
+        console.log(`| ${line.padEnd(width - 4)} |`);
+    }
+
+    console.log(separator);
+    for (const line of support) {
         console.log(`| ${line.padEnd(width - 4)} |`);
     }
 
