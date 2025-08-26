@@ -12,6 +12,7 @@ import { dns } from "./commands/dns.js";
 import { rdns } from "./commands/rdns.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
+import { js } from "./commands/js.js";
 
 
 dotenv.config();
@@ -167,6 +168,12 @@ async function handle(message: Message) {
         case 'rdns': {
             const target = args[0];
             await rdns(message, target);
+            break;
+        }
+
+        case 'js': {
+            const code = message.content.slice(realPrefix.length + 3).trim();
+            await js(message, code);
             break;
         }
 

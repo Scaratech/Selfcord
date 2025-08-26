@@ -78,3 +78,22 @@ Allows you to chat with a model on https://openrouter.ai/ given a model, prompt,
 Examples:
 - `$sc or openai/gpt-oss-20b:free "what is 1 + 1"`
 - `$sc or openai/gpt-oss-20b:free "what is 2 * 2" "you are a helpful assistant that mainly works with math"`
+
+## `dns <record_type> <hostname>`
+Returns records for `hostname` given `record_type`
+
+Examples:
+- `$sc dns A scaratek.dev`
+
+## `rdns <ip>`
+Performs an rDNS lookup given an IP
+
+Examples:
+- `$sc rdns 1.1.1.1`
+
+## `js <code>`
+Executes JS code and returns the result, has access to `message` and `client`
+
+Examples:
+- `$sc js return client.user.email`
+- `$sc js console.log(client)`
