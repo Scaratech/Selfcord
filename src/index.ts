@@ -141,78 +141,25 @@ export async function handle(message: Message) {
 
         /// OTHER ///
         case 'or': {
-            const newIndex = args.indexOf('--new');
-            const isNewConv = newIndex !== -1;
-
-            if (isNewConv) {
-                args.splice(newIndex, 1);
-            }
+            const raw = message.content.slice(realPrefix.length).trim();
+            const newMatch = raw.match(/\s--new\b/);
+            const isNewConv = Boolean(newMatch);
+            const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
+            const orRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
+            const m = cleaned.match(orRegex);
     
-            const model = args[0];
-
-            let content = message.content.slice(realPrefix.length).trim();
-
-            if (isNewConv) {
-                content = content.replace(/--new\b\s*/, '');
-            }
-
-            const orIndex = content.toLowerCase().indexOf('or ');
-
-            if (orIndex === -1) {
+            if (!m) {
                 message.reply("**Error:** Invalid or command format");
                 break;
             }
-
-            const afterOr = content.slice(orIndex + 3).trim();
-            const modelMatch = afterOr.match(/^(\S+)/);
-
-            if (!modelMatch) {
-                message.reply("**Error:** No model specified");
-                break;
-            }
-
-            const afterModel = afterOr.slice(modelMatch[1].length).trim();
-            const quotedArgs = [];
-
-            let current = '';
-            let inQuotes = false;
-            let quoteChar = '';
-
-            for (let i = 0; i < afterModel.length; i++) {
-                const char = afterModel[i];
-
-                if (!inQuotes && (char === '"' || char === "'")) {
-                    inQuotes = true;
-                    quoteChar = char;
-                } else if (inQuotes && char === quoteChar) {
-                    inQuotes = false;
-
-                    quotedArgs.push(current);
-
-                    current = '';
-                    quoteChar = '';
-                } else if (inQuotes) {
-                    current += char;
-                } else if (char === ' ' && current.trim()) {
-                    quotedArgs.push(current.trim());
-                    current = '';
-                } else if (char !== ' ') {
-                    current += char;
-                }
-            }
-
-            if (current.trim()) {
-                quotedArgs.push(current.trim());
-            }
-
-            const userPrompt = quotedArgs[0];
-            const sysPrompt = quotedArgs[1];
+    
+            const [, model, userPrompt, sysPrompt] = m;
 
             try {
                 await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
-            } catch (err) {
+            } catch (err: any) {
                 console.error('Error:', err);
-                message.reply(`**Error**: ${err.message}`);
+                message.reply(`**Error:** ${err.message}`);
             }
 
             break;
@@ -224,27 +171,31 @@ export async function handle(message: Message) {
     }
 }
 
-// Auto-chain AI conversation: reply to AI messages triggers follow-up
 import { getModelForAI } from "./commands/other/openRouter.js";
 client.on("messageCreate", async (message) => {
-    // If this message is a reply to an AI message, auto-forward to AI
     const repliedId = message.reference?.messageId;
+
     if (repliedId) {
         const model = getModelForAI(repliedId);
         const isOwner = message.author.username === client.user?.username;
         const isSharedUser = sharedUsers.length > 0 && sharedUsers.includes(message.author.id);
+
         if (model && (isOwner || isSharedUser)) {
-            // Use the reply content as the new user prompt
             await openRouterCmd(message, model, message.content);
             return;
         }
     }
-    // Existing command handler follows
+
     const isOwner = message.author.username === client.user?.username;
     const isSharedUser = sharedUsers.length > 0 && sharedUsers.includes(message.author.id);
 
-    if (!isOwner && !isSharedUser) return;
-    if (!message.content.startsWith(realPrefix)) return;
+    if (!isOwner && !isSharedUser) {
+        return;
+    }
+
+    if (!message.content.startsWith(realPrefix)) {
+        return;
+    }
 
     handle(message);
 });
