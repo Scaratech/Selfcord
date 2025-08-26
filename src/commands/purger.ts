@@ -9,7 +9,7 @@ export async function purger(message: Message, target: string, shadow: boolean =
         
         if (parsedTarget === null) {
             if (!shadow) {
-                await message.reply('Usage: purge <num>|at [--shadow]');
+                await message.reply('**Usage**: \`$sc purge <num>|at [--shadow]\`');
             }
             return;
         }

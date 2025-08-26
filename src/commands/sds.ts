@@ -1,6 +1,10 @@
 import { Message } from "discord.js-selfbot-v13";
 
 export async function sds(message: Message, target: string) {
+    if (!target) {
+        message.reply("**Usage:** \`$sc sds <domain>\`");
+        return;
+    }
     await message.reply('**Searching...**');
 
     const url = `https://crt.sh/?q=%25.${target}&output=json`;

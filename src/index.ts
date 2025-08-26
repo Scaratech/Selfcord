@@ -6,17 +6,19 @@ import { ip } from "./commands/ip.js";
 import { sds } from "./commands/sds.js";
 import { sh } from "./commands/sh.js";
 import { friend } from "./commands/friend.js";
+import { or } from "./commands/or.js";
+import { sysfetch } from "./commands/sysfetch.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
-import { sysfetch } from "./commands/sysfetch.js";
 
 dotenv.config();
 
 const token = process.env.TOKEN;
 const prefix = process.env.PREFIX || '$sc';
+const realPrefix = prefix.length > 1 ? `${prefix} ` : prefix;
 
 async function handle(message: Message) {
-    const args = message.content.slice(prefix.length).trim().split(/\s+/);
+    const args = message.content.slice(realPrefix.length).trim().split(/\s+/);
     const command = args.shift()?.toLowerCase() || '';
 
     const shadowIndex = args.indexOf('--shadow');
@@ -80,6 +82,15 @@ async function handle(message: Message) {
             break;
         }
 
+        case 'or': {
+            const model = args[0];
+            const userPrompt = args[1];
+            const sysPrompt = args[2] ? args[2] : undefined;
+
+            await or(message, model, userPrompt, sysPrompt);
+            break;
+        }
+
         default:
             message.reply(`**Unknown command**: ${command}`);
     }
@@ -87,24 +98,27 @@ async function handle(message: Message) {
 
 client.on("messageCreate", (message) => {
     if (message.author.username !== client.user?.username) return;
-    if (!message.content.startsWith(prefix)) return;
+    if (!message.content.startsWith(realPrefix)) return;
 
     handle(message);
 });
 
 client.on("ready", async () => {
     console.clear();
-
+    const header = 'Selfcord ready';
     const info = [
-        'Selfcord ready',
         `Logged in as ${client.user?.tag}`,
-        `Using prefix: ${prefix}`
+        `Using prefix: ${prefix}`,
+        `OpenRouter support: ${process.env.OR_KEY ? 'Yes' : 'No'}`,
     ];
 
-    const width = Math.max(...info.map(line => line.length)) + 4;
+    const width = Math.max(header.length, ...info.map(line => line.length)) + 4;
     const border = '+' + '-'.repeat(width - 2) + '+';
+    const separator = '| ' + '-'.repeat(width - 4) + ' |';
 
     console.log(border);
+    console.log(`| ${header.padEnd(width - 4)} |`);
+    console.log(separator);
 
     for (const line of info) {
         console.log(`| ${line.padEnd(width - 4)} |`);

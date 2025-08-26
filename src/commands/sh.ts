@@ -2,6 +2,11 @@ import { Message } from "discord.js-selfbot-v13";
 import { exec } from "child_process";
 
 export function sh(message: Message, cmd: string) {
+    if (!cmd) {
+        message.reply("**Usage:** \`$sc sh <command>\`");
+        return;
+    }
+
     exec(cmd, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
         if (error) {
             message.reply(`**Error executing:** \`${cmd}\``);

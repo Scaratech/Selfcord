@@ -8,6 +8,7 @@ export function help() {
 - \`sh <command>\`: Execute a shell command
 - \`friend\`: Generate a friend invite link
 - \`sysfetch\`: Display system information
+- \`or <model> <prompt> <?system_prompt>\`: Chat with an OpenRouter model
 
 **Selfcord Author**: \`scaratek.dev\` (on Discord)
 **Selfbot Repo**: \`https://github.com/scaratech/selfcord\``;
