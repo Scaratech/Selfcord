@@ -21,6 +21,7 @@ export async function or(
         return;
     }
 
+    console.log('[debug] OR call got');
     const req = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -35,6 +36,7 @@ export async function or(
             ]
         })
     });
+    console.log('[debug] OR response received');
 
     if (!req.ok) {
         message.reply(`**Error:** ${req.status} ${req.statusText}`);

@@ -15,8 +15,16 @@ import { Message } from "discord.js-selfbot-v13";
 dotenv.config();
 
 const token = process.env.TOKEN;
+
 const prefix = process.env.PREFIX || '$sc';
 const realPrefix = prefix.length > 1 ? `${prefix} ` : prefix;
+
+// Claude Sonnet 4
+const sharedUsers: string[] = process.env.SHARED
+    ? process.env.SHARED.split(',')
+        .map(id => id.trim().replace(/[\[\]]/g, ''))
+        .filter(id => id.length > 0)
+    : [];
 
 async function handle(message: Message) {
     const args = message.content.slice(realPrefix.length).trim().split(/\s+/);
@@ -86,7 +94,7 @@ async function handle(message: Message) {
         // Claude 4 Sonnet
         case 'or': {
             const model = args[0];
-            
+
             const content = message.content.slice(realPrefix.length).trim();
             const orIndex = content.toLowerCase().indexOf('or ');
 
@@ -94,24 +102,24 @@ async function handle(message: Message) {
                 message.reply("**Error:** Invalid or command format");
                 break;
             }
-            
+
             const afterOr = content.slice(orIndex + 3).trim();
             const modelMatch = afterOr.match(/^(\S+)/);
-    
+
             if (!modelMatch) {
                 message.reply("**Error:** No model specified");
                 break;
             }
-            
+
             const afterModel = afterOr.slice(modelMatch[1].length).trim();
             const quotedArgs = [];
             let current = '';
             let inQuotes = false;
             let quoteChar = '';
-            
+
             for (let i = 0; i < afterModel.length; i++) {
                 const char = afterModel[i];
-                
+
                 if (!inQuotes && (char === '"' || char === "'")) {
                     inQuotes = true;
                     quoteChar = char;
@@ -129,18 +137,23 @@ async function handle(message: Message) {
                     current += char;
                 }
             }
-            
+
             if (current.trim()) {
                 quotedArgs.push(current.trim());
             }
-            
+
             const userPrompt = quotedArgs[0];
             const sysPrompt = quotedArgs[1];
 
-            await or(message, model, userPrompt, sysPrompt);
+            try {
+                await or(message, model, userPrompt, sysPrompt);
+            } catch (err) {
+                console.error('Error:', err);
+                message.reply(`**Error: ${err.message}**`);
+            }
+
             break;
         }
-
 
         default:
             message.reply(`**Unknown command**: ${command}`);
@@ -148,7 +161,10 @@ async function handle(message: Message) {
 }
 
 client.on("messageCreate", (message) => {
-    if (message.author.username !== client.user?.username) return;
+    const isOwner = message.author.username === client.user?.username;
+    const isSharedUser = sharedUsers.length > 0 && sharedUsers.includes(message.author.id);
+
+    if (!isOwner && !isSharedUser) return;
     if (!message.content.startsWith(realPrefix)) return;
 
     handle(message);
@@ -161,6 +177,7 @@ client.on("ready", async () => {
         `Logged in as ${client.user?.tag}`,
         `Using prefix: ${prefix}`,
         `OpenRouter support: ${process.env.OR_KEY ? 'Yes' : 'No'}`,
+        `Shared users: ${sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None'}`,
     ];
 
     const width = Math.max(header.length, ...info.map(line => line.length)) + 4;

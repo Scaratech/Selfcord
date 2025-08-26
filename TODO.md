@@ -1,4 +1,3 @@
-- [ ] `fm` command
 - [ ] `fms` command (last.fm spoofer)
 - [ ] `rdns` command
 - [ ] `dns` command

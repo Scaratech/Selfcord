@@ -58,8 +58,7 @@ export function sysfetch(message: Message) {
 
     const output = lines.join('\n');
 
-    message.reply(`**Sysfetch:**
-\`\`\`bash
+    message.reply(`\`\`\`bash
 ${output}
 \`\`\``);
 }
