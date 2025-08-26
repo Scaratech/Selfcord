@@ -1,9 +1,9 @@
 import { Message, Collection } from "discord.js-selfbot-v13";
-import { client } from "../client.js";
+import { client } from "../../client.js";
 
 type PurgeTarget = 'at' | number;
 
-export async function purger(message: Message, target: string, shadow: boolean = false): Promise<void> {
+export async function messasgePurger(message: Message, target: string, shadow: boolean = false): Promise<void> {
     try {
         const parsedTarget = parseTarget(target);
         

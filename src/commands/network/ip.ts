@@ -1,6 +1,6 @@
 import { Message } from "discord.js-selfbot-v13";
 
-export async function ip(message: Message, target: string) {
+export async function ipLookup(message: Message, target: string) {
   if (!target) {
     message.reply("**Usage:** \`$sc ip <ip>\`");
     return;

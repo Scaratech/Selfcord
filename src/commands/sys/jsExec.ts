@@ -1,8 +1,8 @@
-import { client } from "../client.js";
+import { client } from "../../client.js";
 import { Message } from "discord.js-selfbot-v13";
 import util from 'util';
 
-export async function js(message: Message, code: string) {
+export async function jsExec(message: Message, code: string) {
     if (!code) {
         message.reply("**Usage:** js <JavaScript code>");
         return;

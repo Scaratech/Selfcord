@@ -1,6 +1,6 @@
 import { Message } from "discord.js-selfbot-v13";
 
-export async function sds(message: Message, target: string) {
+export async function subdomainScanner(message: Message, target: string) {
     if (!target) {
         message.reply("**Usage:** \`$sc sds <domain>\`");
         return;

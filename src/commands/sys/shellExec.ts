@@ -1,7 +1,7 @@
 import { Message } from "discord.js-selfbot-v13";
 import { exec } from "child_process";
 
-export function sh(message: Message, cmd: string) {
+export function shellExec(message: Message, cmd: string) {
     if (!cmd) {
         message.reply("**Usage:** \`$sc sh <command>\`");
         return;

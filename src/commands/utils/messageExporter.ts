@@ -9,7 +9,7 @@ interface MessageData {
     content: string;
 }
 
-export async function exporter(message: Message, target: string, shadow: boolean = false){
+export async function messageExporter(message: Message, target: string, shadow: boolean = false){
     try {
         const dir = path.resolve(process.cwd(), 'exports');
 

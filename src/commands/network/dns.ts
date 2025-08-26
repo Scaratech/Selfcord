@@ -1,7 +1,7 @@
 import { Message } from "discord.js-selfbot-v13";
 import { promises as dnsPromises } from "dns";
 
-export async function dns(message: Message, type: string, target: string) {
+export async function dnsLookup(message: Message, type: string, target: string) {
     if (!type || !target) {
         message.reply("**Usage:** \`dns <record> <hostname>\`");
         return;

@@ -1,7 +1,7 @@
 import { Message } from "discord.js-selfbot-v13";
 import { promises as dnsPromises } from "dns";
 
-export async function rdns(message: Message, target: string) {
+export async function rdnsLookup(message: Message, target: string) {
     if (!target) {
         message.reply("**Usage:** \`rdns <IP>\`");
         return;

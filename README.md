@@ -72,8 +72,16 @@ Returns a neofetch-like thing
 Example:
 - `$sc sysfetch`
 
-### `or <model> "user prompt" "system prompt (optionally)"`
-Allows you to chat with a model on https://openrouter.ai/ given a model, prompt, and optionally, system prompt
+### `or <model> "user prompt" "system prompt (optionally) [--new]"`
+Allows you to chat with a model on https://openrouter.ai/ given a model, prompt, and optionally, system prompt. If `--new` is present, conversation history will be deleted.
+
+Conversations are stored in `conversations`/\
+You (or shared users) can reply to AI responses, and their reply will be treated as a prompt, for example:
+```
+User 1 runs: $or mistralai/mistral-small-3.2-24b-instruct:free "meow" "you are a catgirl"
+User 2 replys to user 1s message with: "meow"
+"meow" will be sent to the AI, and the response is replied to user 2s message
+```
 
 Examples:
 - `$sc or openai/gpt-oss-20b:free "what is 1 + 1"`
@@ -97,3 +105,12 @@ Executes JS code and returns the result, has access to `message` and `client`
 Examples:
 - `$sc js return client.user.email`
 - `$sc js console.log(client)`
+
+## `alias <name> "command"`
+Creates an alias
+
+Examples:
+- `$sc alias a meow`
+    - Running `$sc a` will edit the message to contain `$meow`
+- `$sc alias b $sc ip 1.1.1.1`
+    - Running `$sc b` will edit the message to contain `$sc ip 1.1.1.1` and then execute the command
