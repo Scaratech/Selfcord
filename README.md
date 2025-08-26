@@ -12,7 +12,7 @@ $ cd selfcord
 $ pnpm i # or npm i
 $ pnpm build # or npm run build
 ```
-### `.env file`
+### `.env` file
 - See `.env.example`
 
 ### Start It
