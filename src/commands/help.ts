@@ -9,6 +9,8 @@ export function help() {
 - \`friend\`: Generate a friend invite link
 - \`sysfetch\`: Display system information
 - \`or <model> "user prompt" "system prompt (optionally)"\`: Chat with an OpenRouter model (System prompt is optional)
+- \`dns <record_type> <hostname>\`: Fetch DNS records for a hostname
+- \`rdns <ip>\`: Perform rDNS lookup given an IP
 
 **Selfcord Author**: \`scaratek.dev\` (on Discord)
 **Selfbot Repo**: \`https://github.com/scaratech/selfcord\``;

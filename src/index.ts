@@ -8,6 +8,8 @@ import { sh } from "./commands/sh.js";
 import { friend } from "./commands/friend.js";
 import { or } from "./commands/or.js";
 import { sysfetch } from "./commands/sysfetch.js";
+import { dns } from "./commands/dns.js";
+import { rdns } from "./commands/rdns.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
 
@@ -152,6 +154,19 @@ async function handle(message: Message) {
                 message.reply(`**Error: ${err.message}**`);
             }
 
+            break;
+        }
+
+        case 'dns': {
+            const recordType = args[0];
+            const hostname = args[1];
+            await dns(message, recordType, hostname);
+            break;
+        }
+
+        case 'rdns': {
+            const target = args[0];
+            await rdns(message, target);
             break;
         }
 
