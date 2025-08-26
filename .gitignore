@@ -3,4 +3,5 @@ dist/
 .env
 exports/
 conversations/
+github/
 .aliases.json

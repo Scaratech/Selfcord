@@ -114,3 +114,6 @@ Examples:
     - Running `$sc a` will edit the message to contain `$meow`
 - `$sc alias b $sc ip 1.1.1.1`
     - Running `$sc b` will edit the message to contain `$sc ip 1.1.1.1` and then execute the command
+
+## `$gh <username>`
+Scrapes a GitHub user for all associated emails and names, also logs all results to `github/`

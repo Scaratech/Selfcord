@@ -17,6 +17,7 @@ import { sysfetch } from "./commands/sys/sysfetch.js";
 
 /// COMMANDS - OTHER ///
 import { openRouterCmd } from "./commands/other/openRouter.js";
+import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
 import { helpCmd } from "./commands/helpCmd.js";
 
 /// OTHER ///
@@ -74,6 +75,11 @@ export async function handle(message: Message) {
             break;
         }
 
+        /// GITHUB COMMITS ///
+        case 'gh': {
+            await githubCommitCmd(message, args);
+            break;
+        }
         case 'purge': {
             const target = args[0];
             await messasgePurger(message, target, shadow);
@@ -162,6 +168,11 @@ export async function handle(message: Message) {
                 message.reply(`**Error:** ${err.message}`);
             }
 
+            break;
+        }
+
+        case 'gh': {
+            await githubCommitCmd(message, args);
             break;
         }
         /////////////

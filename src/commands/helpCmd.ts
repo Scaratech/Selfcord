@@ -13,6 +13,7 @@ export function helpCmd() {
 - \`rdns <ip>\`: Perform rDNS lookup given an IP
 - \`js <code>\`: Execute JavaScript code (has access to \`client\` and \`message\`)
 - \`alias <name> "command"\`: Create a command alias (See docs for more info)
+- \`gh <username>\`: Scrape all commits from a GitHub user for all usernames and emails associated
 
 **Selfcord Author**: \`scaratek.dev\` (on Discord)
 **Selfbot Repo**: \`https://github.com/scaratech/selfcord\``;
