@@ -5,7 +5,7 @@ FOSS utility-focused Discord selfbot
 
 ## Setup
 ### Building
-# Requirements: git, NodeJS, npm/pnpm
+- Requirements: git, NodeJS, npm/pnpm
 ```sh
 $ git clone https://github.com/scaratech/selfcord
 $ cd selfcord
@@ -72,7 +72,7 @@ Returns a neofetch-like thing
 Example:
 - `$sc sysfetch`
 
-### `or <model> <user_prompt> <?system_prompt>`
+### `or <model> "user prompt" "system prompt (optionally)"`
 Allows you to chat with a model on https://openrouter.ai/ given a model, prompt, and optionally, system prompt
 
 Examples:
