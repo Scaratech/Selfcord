@@ -11,6 +11,7 @@ import { sysfetch } from "./commands/sysfetch.js";
 import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
 
+
 dotenv.config();
 
 const token = process.env.TOKEN;
@@ -82,14 +83,64 @@ async function handle(message: Message) {
             break;
         }
 
+        // Claude 4 Sonnet
         case 'or': {
             const model = args[0];
-            const userPrompt = args[1];
-            const sysPrompt = args[2] ? args[2] : undefined;
+            
+            const content = message.content.slice(realPrefix.length).trim();
+            const orIndex = content.toLowerCase().indexOf('or ');
+
+            if (orIndex === -1) {
+                message.reply("**Error:** Invalid or command format");
+                break;
+            }
+            
+            const afterOr = content.slice(orIndex + 3).trim();
+            const modelMatch = afterOr.match(/^(\S+)/);
+    
+            if (!modelMatch) {
+                message.reply("**Error:** No model specified");
+                break;
+            }
+            
+            const afterModel = afterOr.slice(modelMatch[1].length).trim();
+            const quotedArgs = [];
+            let current = '';
+            let inQuotes = false;
+            let quoteChar = '';
+            
+            for (let i = 0; i < afterModel.length; i++) {
+                const char = afterModel[i];
+                
+                if (!inQuotes && (char === '"' || char === "'")) {
+                    inQuotes = true;
+                    quoteChar = char;
+                } else if (inQuotes && char === quoteChar) {
+                    inQuotes = false;
+                    quotedArgs.push(current);
+                    current = '';
+                    quoteChar = '';
+                } else if (inQuotes) {
+                    current += char;
+                } else if (char === ' ' && current.trim()) {
+                    quotedArgs.push(current.trim());
+                    current = '';
+                } else if (char !== ' ') {
+                    current += char;
+                }
+            }
+            
+            if (current.trim()) {
+                quotedArgs.push(current.trim());
+            }
+            
+            const userPrompt = quotedArgs[0];
+            const sysPrompt = quotedArgs[1];
 
             await or(message, model, userPrompt, sysPrompt);
             break;
         }
+
 
         default:
             message.reply(`**Unknown command**: ${command}`);
