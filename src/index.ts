@@ -3,6 +3,12 @@ import { messageExporter } from "./commands/utils/messageExporter.js";
 import { messasgePurger } from "./commands/utils/messagePurger.js";
 import { genFriendInv } from "./commands/utils/genFriend.js";
 import { aliasCmd, invokeAlias } from "./commands/utils/alias.js";
+import { 
+    nitroSniper, 
+    isEnabled, 
+    attemptSnipe, 
+    extractCode 
+} from "./commands/utils/nitroSniper.js";
 
 /// COMMANDS - NETWORK ///
 import { ipLookup } from "./commands/network/ip.js";
@@ -16,7 +22,7 @@ import { jsExec } from "./commands/sys/jsExec.js";
 import { sysfetch } from "./commands/sys/sysfetch.js";
 
 /// COMMANDS - OTHER ///
-import { openRouterCmd } from "./commands/other/openRouter.js";
+import { openRouterCmd, getModelForAI } from "./commands/other/openRouter.js";
 import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
 import { helpCmd } from "./commands/helpCmd.js";
 
@@ -24,10 +30,42 @@ import { helpCmd } from "./commands/helpCmd.js";
 import { client } from "./client.js";
 
 /// DEPS ///
-import dotenv from "dotenv";
 import { Message } from "discord.js-selfbot-v13";
+import dotenv from "dotenv";
+import chalk from "chalk";
+import stripAnsi from "strip-ansi";
 
 dotenv.config();
+
+/// CONSOLE OVERRIDES ///
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+const originalInfo = console.info;
+
+console.log = (...args) => {
+    originalLog(chalk.blue(...args.map(arg => typeof arg === 'string' ? arg : String(arg))));
+};
+
+console.error = (...args) => {
+    originalError(chalk.red.bold('Error:'),
+        ...args.map(arg => typeof arg === 'string' ? chalk.red(arg) : chalk.red(String(arg))));
+};
+
+console.warn = (...args) => {
+    originalWarn(chalk.yellow.bold('Warning:'),
+        ...args.map(arg => typeof arg === 'string' ? chalk.yellow(arg) : chalk.yellow(String(arg))));
+};
+
+console.info = (...args) => {
+    originalInfo(chalk.cyan.bold('Info:'),
+        ...args.map(arg => typeof arg === 'string' ? chalk.cyan(arg) : chalk.cyan(String(arg))));
+};
+
+(console as any).success = (...args: any[]) => {
+    originalLog(chalk.green.bold('Success:'),
+        ...args.map(arg => typeof arg === 'string' ? chalk.green(arg) : chalk.green(String(arg))));
+};
 
 const token = process.env.TOKEN;
 
@@ -64,126 +102,135 @@ export async function handle(message: Message) {
         return;
     }
 
-    switch (command) {
-        case 'help':
-            message.reply(helpCmd());
-            break;
+    console.log(chalk.green.bold('[COMMAND]') + chalk.yellow(` ${message.author.tag}:`) + chalk.cyan(` ${command}`) + chalk.white(` ${args.join(' ')}`));
 
-        /// UTILS ///
-        case 'alias': {
-            await aliasCmd(message, args);
-            break;
-        }
+    try {
+        switch (command) {
+            case 'help':
+                message.reply(helpCmd());
+                break;
 
-        /// GITHUB COMMITS ///
-        case 'gh': {
-            await githubCommitCmd(message, args);
-            break;
-        }
-        case 'purge': {
-            const target = args[0];
-            await messasgePurger(message, target, shadow);
-            break;
-        }
-
-        case 'export': {
-            const fmt = args[0];
-            await messageExporter(message, fmt, shadow);
-            break;
-        }
-
-        case 'friend': {
-            genFriendInv(message);
-            break;
-        }
-        ////////////
-
-
-        /// NETWORK ///
-        case 'ip': {
-            const target = args[0];
-            await ipLookup(message, target);
-            break;
-        }
-
-        case 'sds': {
-            const target = args[0];
-            await subdomainScanner(message, target);
-            break;
-        }
-
-        case 'dns': {
-            const recordType = args[0];
-            const hostname = args[1];
-            await dnsLookup(message, recordType, hostname);
-            break;
-        }
-
-        case 'rdns': {
-            const target = args[0];
-            await rdnsLookup(message, target);
-            break;
-        }
-        ///////////////
-
-        /// SYS ///
-        case 'sh': {
-            const cmd = args.join(' ');
-            shellExec(message, cmd);
-            break;
-        }
-
-        case 'js': {
-            const code = message.content.slice(realPrefix.length + 3).trim();
-            await jsExec(message, code);
-            break;
-        }
-
-        case 'sysfetch': {
-            sysfetch(message);
-            break;
-        }
-        ///////////
-
-        /// OTHER ///
-        case 'or': {
-            const raw = message.content.slice(realPrefix.length).trim();
-            const newMatch = raw.match(/\s--new\b/);
-            const isNewConv = Boolean(newMatch);
-            const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
-            const orRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
-            const m = cleaned.match(orRegex);
-
-            if (!m) {
-                message.reply("**Error:** Invalid or command format");
+            /// UTILS ///
+            case 'alias': {
+                await aliasCmd(message, args);
                 break;
             }
 
-            const [, model, userPrompt, sysPrompt] = m;
-
-            try {
-                await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
-            } catch (err: any) {
-                console.error('Error:', err);
-                message.reply(`**Error:** ${err.message}`);
+            case 'purge': {
+                const target = args[0];
+                await messasgePurger(message, target, shadow);
+                break;
             }
 
-            break;
-        }
+            case 'export': {
+                const fmt = args[0];
+                await messageExporter(message, fmt, shadow);
+                break;
+            }
 
-        case 'gh': {
-            await githubCommitCmd(message, args);
-            break;
-        }
-        /////////////
+            case 'friend': {
+                genFriendInv(message);
+                break;
+            }
 
-        default:
-            message.reply(`**Unknown command**: ${command}`);
+            case 'ns': {
+                const status = args[0];
+                nitroSniper(message, status);
+                break;
+            }
+            ////////////
+
+
+            /// NETWORK ///
+            case 'ip': {
+                const target = args[0];
+                await ipLookup(message, target);
+                break;
+            }
+
+            case 'sds': {
+                const target = args[0];
+                await subdomainScanner(message, target);
+                break;
+            }
+
+            case 'dns': {
+                const recordType = args[0];
+                const hostname = args[1];
+                await dnsLookup(message, recordType, hostname);
+                break;
+            }
+
+            case 'rdns': {
+                const target = args[0];
+                await rdnsLookup(message, target);
+                break;
+            }
+            ///////////////
+
+            /// SYS ///
+            case 'sh': {
+                const cmd = args.join(' ');
+                shellExec(message, cmd);
+                break;
+            }
+
+            case 'js': {
+                const code = message.content.slice(realPrefix.length + 3).trim();
+                await jsExec(message, code);
+                break;
+            }
+
+            case 'sysfetch': {
+                sysfetch(message);
+                break;
+            }
+            ///////////
+
+            /// OTHER ///
+            case 'or': {
+                const raw = message.content.slice(realPrefix.length).trim();
+                const newMatch = raw.match(/\s--new\b/);
+                const isNewConv = Boolean(newMatch);
+                const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
+                const orRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
+                const m = cleaned.match(orRegex);
+
+                if (!m) {
+                    message.reply("**Error:** Invalid or command format");
+                    break;
+                }
+
+                const [, model, userPrompt, sysPrompt] = m;
+
+                await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
+                break;
+            }
+
+            case 'gh': {
+                await githubCommitCmd(message, args);
+                break;
+            }
+            /////////////
+
+            default:
+                message.reply(`**Unknown command**: \`${command}\``);
+        }
+    } catch (error: any) {
+        console.error(`Command failed: ${error.message}`);
+        message.reply(`**Error:** ${error.message}`);
     }
 }
 
-import { getModelForAI } from "./commands/other/openRouter.js";
 client.on("messageCreate", async (message) => {
+    if (isEnabled() && message.content) {
+        const giftCodes = extractCode(message.content);
+
+        for (const giftCode of giftCodes) {
+            await attemptSnipe(message, giftCode);
+        }
+    }
+
     const repliedId = message.reference?.messageId;
 
     if (repliedId) {
@@ -214,33 +261,42 @@ client.on("messageCreate", async (message) => {
 client.on("ready", async () => {
     console.clear();
 
-    const header = 'Selfcord ready';
+    const header = chalk.green.bold('Selfcord ready');
     const info = [
-        `Logged in as ${client.user?.tag}`,
-        `Using prefix: ${prefix}`,
-        `Shared users: ${sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None'}`
+        chalk.cyan(`Logged in as ${client.user?.tag}`),
+        chalk.cyan(`Using prefix: ${prefix}`),
+        chalk.cyan(`Shared users: ${sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None'}`)
     ];
     const support = [
-        `OpenRouter support: ${process.env.OR_KEY ? 'Yes' : 'No'}`,
-        `GitHub Support: ${process.env.GITHUB_TOKEN ? 'Yes' : 'No'}`
+        chalk.yellow(`OpenRouter support: ${process.env.OR_KEY ? chalk.green('Yes') : chalk.red('No')}`),
+        chalk.yellow(`GitHub Support: ${process.env.GITHUB_TOKEN ? chalk.green('Yes') : chalk.red('No')}`),
+        chalk.yellow(`Nitro Sniper: ${isEnabled() ? chalk.green('Enabled') : chalk.red('Disabled')}`)
     ];
 
-    const width = Math.max(header.length, ...info.map(line => line.length)) + 4;
-    const border = '+' + '-'.repeat(width - 2) + '+';
-    const separator = '| ' + '-'.repeat(width - 4) + ' |';
+    const allLines = [header, ...info, ...support];
+    const maxContentWidth = Math.max(...allLines.map(line => stripAnsi(line).length));
+    const boxWidth = maxContentWidth + 8;
+    const border = chalk.blue('+' + '-'.repeat(boxWidth - 2) + '+');
+    const separator = chalk.blue('| ' + '-'.repeat(boxWidth - 4) + ' |');
+
+    const createLine = (content: string) => {
+        const contentLength = stripAnsi(content).length;
+        const padding = ' '.repeat(boxWidth - 6 - contentLength);
+
+        return chalk.blue('|  ') + content + padding + chalk.blue('  |');
+    };
 
     console.log(border);
-    console.log(`| ${header.padEnd(width - 4)} |`);
+    console.log(createLine(header));
     console.log(separator);
-    
 
     for (const line of info) {
-        console.log(`| ${line.padEnd(width - 4)} |`);
+        console.log(createLine(line));
     }
 
     console.log(separator);
     for (const line of support) {
-        console.log(`| ${line.padEnd(width - 4)} |`);
+        console.log(createLine(line));
     }
 
     console.log(border);

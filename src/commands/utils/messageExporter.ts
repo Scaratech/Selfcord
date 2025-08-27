@@ -19,7 +19,7 @@ export async function messageExporter(message: Message, target: string, shadow: 
 
         if (!['json', 'txt'].includes(target)) {
             if (!shadow) {
-                return message.reply('**Usage**: \`$sc export <json|txt> [--shadow]\`');
+                return message.reply('**Usage**: \`export <json|txt> [--shadow]\`');
             }
 
             return;

@@ -3,7 +3,7 @@ import { exec } from "child_process";
 
 export function shellExec(message: Message, cmd: string) {
     if (!cmd) {
-        message.reply("**Usage:** \`$sc sh <command>\`");
+        message.reply("**Usage:** \`sh <command>\`");
         return;
     }
 

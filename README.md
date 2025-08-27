@@ -117,3 +117,6 @@ Examples:
 
 ## `$gh <username>`
 Scrapes a GitHub user for all associated emails and names, also logs all results to `github/`
+
+Examples:
+- `$sc gh brandonhilkert`
