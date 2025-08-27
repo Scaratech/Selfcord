@@ -125,7 +125,7 @@ Examples:
 - `$sc alias -n b a`
     - Running `b` will edit the message to contain `a`
 
-## `$gh <username>`
+## `gh <username>`
 Scrapes a GitHub user for all associated emails and names, also logs all results to `github/`
 
 Examples:
