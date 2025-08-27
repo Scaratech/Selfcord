@@ -6,7 +6,12 @@ import { Message } from 'discord.js-selfbot-v13';
 const aliasPath = path.resolve(process.cwd(), '.aliases.json');
 const PREFIX = process.env.PREFIX || '$sc';
 
-type AliasMap = Record<string, string>;
+type entry = {
+    value: string;
+    usePrefix: boolean;
+};
+
+type AliasMap = Record<string, entry | string>;
 
 function loadAliases(): AliasMap {
     if (!fs.existsSync(aliasPath)) {
@@ -26,6 +31,13 @@ function saveAliases(map: AliasMap) {
 }
 
 export async function aliasCmd(message: Message, args: string[]) {
+    const nFlagIndex = args.indexOf('-n');
+    const noPrefix = nFlagIndex !== -1;
+    
+    if (noPrefix) {
+        args.splice(nFlagIndex, 1);
+    }
+    
     const name = args[0];
 
     if (!name) {
@@ -34,11 +46,19 @@ export async function aliasCmd(message: Message, args: string[]) {
     }
 
     const raw = message.content.trim();
-    const parts = raw.split(/\s+/);
-    const idx = raw.indexOf(parts[1]) + parts[1].length;
+    let cmdStart = raw.indexOf('alias') + 'alias'.length;
 
-    let val = raw.slice(idx).trim();
+    if (noPrefix) {
+        const flagPos = raw.indexOf('-n', cmdStart);
 
+        if (flagPos !== -1) {
+            cmdStart = flagPos + 2;
+        }
+    }
+    
+    const namePos = raw.indexOf(name, cmdStart);
+    let startI = namePos + name.length;
+    let val = raw.slice(startI).trim();
 
     if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
         val = val.slice(1, -1);
@@ -50,23 +70,39 @@ export async function aliasCmd(message: Message, args: string[]) {
     }
 
     const map = loadAliases();
-    map[name] = val;
+    map[name] = {
+        value: val,
+        usePrefix: !noPrefix
+    };
+
     saveAliases(map);
 
-    message.reply(`**Alias set:** \`${name}\` -> \`${val}\``);
+    const prefixNote = noPrefix ? ' (no prefix)' : ' (with prefix)';
+    message.reply(`**Alias set:** \`${name}\` -> \`${val}\`${prefixNote}`);
 }
 
-export async function invokeAlias(message: Message, command: string) {
+export async function invokeAlias(message: Message, command: string): Promise<boolean> {
     const map = loadAliases();
-    const val = map[command];
+    const entry = map[command];
 
-    if (!val) {
+    if (!entry) {
         return false;
     }
 
-    await message.edit(val);
+    let value: string;
+    let shouldPrefix: boolean;
+    
+    if (typeof entry === 'string') {
+        value = entry;
+        shouldPrefix = true;
+    } else {
+        value = entry.value;
+        shouldPrefix = entry.usePrefix;
+    }
 
-    if (val.startsWith(PREFIX)) {
+    await message.edit(value);
+
+    if (value.startsWith(PREFIX)) {
         const moduleUrl = pathToFileURL(path.resolve(process.cwd(), 'dist/index.js')).href;
         const { handle } = await import(moduleUrl);
 
@@ -74,4 +110,20 @@ export async function invokeAlias(message: Message, command: string) {
     }
 
     return true;
+}
+
+export function processer(content: string): boolean {
+    const map = loadAliases();
+    const firstWord = content.trim().split(/\s+/)[0];
+    const entry = map[firstWord];
+    
+    if (!entry) {
+        return false;
+    }
+
+    if (typeof entry === 'string') {
+        return false;
+    }
+    
+    return !entry.usePrefix;
 }

@@ -2,7 +2,7 @@
 import { messageExporter } from "./commands/utils/messageExporter.js";
 import { messasgePurger } from "./commands/utils/messagePurger.js";
 import { genFriendInv } from "./commands/utils/genFriend.js";
-import { aliasCmd, invokeAlias } from "./commands/utils/alias.js";
+import { aliasCmd, invokeAlias, processer } from "./commands/utils/alias.js";
 import { 
     nitroSniper, 
     isEnabled, 
@@ -98,7 +98,9 @@ export async function handle(message: Message) {
         return;
     }
 
-    if (command !== 'alias' && await invokeAlias(message, command)) {
+    const isOwner = message.author.username === message.client.user?.username;
+
+    if (command !== 'alias' && isOwner && await invokeAlias(message, command)) {
         return;
     }
 
@@ -254,6 +256,17 @@ client.on("messageCreate", async (message) => {
     if (!isOwner && !isSharedUser) {
         return;
     }
+    if (
+        isOwner && 
+        message.content && 
+        !message.content.startsWith(realPrefix) 
+        && processer(message.content)
+    ) {
+        const firstWord = message.content.trim().split(/\s+/)[0];
+
+        await invokeAlias(message, firstWord);
+        return;
+    }
 
     if (!message.content.startsWith(realPrefix)) {
         return;
@@ -303,6 +316,7 @@ client.on("ready", async () => {
         console.log(createLine(line));
     }
 
+
     console.log(border);
 });
 
@@ -313,6 +327,20 @@ client.on("messageUpdate", async (_oldMessage, newMessage) => {
         newMessage.author?.username !== client.user?.username &&
         !(sharedUsers.length > 0 && sharedUsers.includes(newMessage.author.id))
     ) {
+        return;
+    }
+
+    const isOwner = newMessage.author?.username === client.user?.username;
+
+    if (
+        isOwner && 
+        newMessage.content && 
+        !newMessage.content.startsWith(realPrefix) 
+        && processer(newMessage.content)
+    ) {
+        const firstWord = newMessage.content.trim().split(/\s+/)[0];
+
+        await invokeAlias(newMessage as Message, firstWord);
         return;
     }
 

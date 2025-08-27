@@ -22,7 +22,7 @@ export function helpCmd() {
 ## Utilities
 - help
     - Show this help message
-- alias <name> "command"
+- alias [-n] <name> "command"
     - Create a command alias (See docs for more info)
 - purge <num>|at [--shadow]
     - Purge your messages

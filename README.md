@@ -114,14 +114,16 @@ Examples:
 - `$sc js return client.user.email`
 - `$sc js console.log(client)`
 
-## `alias <name> "command"`
-Creates an alias
+## `alias [-n] <name> "command"`
+Creates an alias. `-n` Specifies w/o prefix
 
 Examples:
 - `$sc alias a meow`
     - Running `$sc a` will edit the message to contain `$meow`
 - `$sc alias b $sc ip 1.1.1.1`
     - Running `$sc b` will edit the message to contain `$sc ip 1.1.1.1` and then execute the command
+- `$sc alias -n b a`
+    - Running `b` will edit the message to contain `a`
 
 ## `$gh <username>`
 Scrapes a GitHub user for all associated emails and names, also logs all results to `github/`
