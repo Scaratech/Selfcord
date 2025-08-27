@@ -120,3 +120,10 @@ Scrapes a GitHub user for all associated emails and names, also logs all results
 
 Examples:
 - `$sc gh brandonhilkert`
+
+## `ns <on|off>`
+Toggles on and off a nitro sniper
+
+Examples:
+- `$sc ns`
+- `$sc ns on`
