@@ -110,6 +110,10 @@ export async function handle(message: Message) {
                 message.reply(helpCmd());
                 break;
 
+            case 'ping':
+                message.reply('Pong!');
+                break;
+
             /// UTILS ///
             case 'alias': {
                 await aliasCmd(message, args);
