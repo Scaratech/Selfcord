@@ -13,7 +13,7 @@ FOSS utility-focused Discord selfbot
 
 ## Setup
 ### Building
-- Requirements: git, NodeJS, npm/pnpm
+- Requirements: git, NodeJS (Newer versions, above v18), npm/pnpm
 ```sh
 $ git clone https://github.com/scaratech/selfcord
 $ cd selfcord

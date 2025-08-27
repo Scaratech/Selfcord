@@ -21,14 +21,18 @@ export function shellExec(message: Message, cmd: string) {
             return;
         }
 
-        const chunkSize = 1900;
-
-        for (let i = 0; i < output.length; i += chunkSize) {
-            const chunk = output.substring(i, i + chunkSize);
-            message.reply(`**Command output**:
+        const content = `**Command output**:
 \`\`\`bash
-${chunk}
-\`\`\``);
+${output}
+\`\`\``;
+
+        if (content.length <= 4000) {
+            message.reply(content);
+        } else {
+            const buffer = Buffer.from(output, 'utf-8');
+            message.reply({
+                files: [{ attachment: buffer, name: 'output.txt' }]
+            });
         }
     });
 }

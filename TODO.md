@@ -1,5 +1,4 @@
-1. For `sh`, if a comamnd output is to long, attach as a file instead of multiple messages
-2. DiY Clyde:
+1. DiY Clyde:
   - Custom system prompt
   - Potentially function calls for the LLM to access the user?
   - Either the above or every message I pass along information about the user talking
