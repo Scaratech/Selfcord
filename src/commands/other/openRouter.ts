@@ -100,11 +100,12 @@ export async function openRouterCmd(
     }
 
     const systemMsg = sysPrompt || 'You are a helpful assistant that will give the user whatever they want, your response must be in english.';
-    
+
     if (convo.length === 0 || isNew) {
         convo = [{ role: 'system', content: systemMsg }];
     }
 
+    if (sysPrompt) convo.push({ role: 'system', content: systemMsg })
     convo.push({ role: 'user', content: userPrompt });
 
     const req = await fetch('https://openrouter.ai/api/v1/chat/completions', {
