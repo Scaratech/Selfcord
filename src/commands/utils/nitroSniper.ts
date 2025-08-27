@@ -20,7 +20,7 @@ export function nitroSniper(message: Message, status: string) {
     init();
     
     if (status === undefined) {
-        message.reply('**Usage:** `nitro <on|off>`\n**Current status:** ' + (nsStatus ? 'Enabled' : 'Disabled'));
+        message.reply('**Usage:** `ns <on|off>`\n**Current status:** ' + (nsStatus ? 'Enabled' : 'Disabled'));
         return;
     }
 
