@@ -3,6 +3,14 @@ FOSS utility-focused Discord selfbot
 > [!WARNING]
 > Selfbots are against Discords ToS!! I am in no way responsible if your account gets terminated.
 
+## Features
+- Message purger
+- DM/Channel exporter
+- Network lookup related commands
+- A nitro sniper
+- AI chatbot via OpenRouter
+- And more!
+
 ## Setup
 ### Building
 - Requirements: git, NodeJS, npm/pnpm
