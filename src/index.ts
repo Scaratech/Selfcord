@@ -2,7 +2,11 @@
 import { messageExporter } from "./commands/utils/messageExporter.js";
 import { messasgePurger } from "./commands/utils/messagePurger.js";
 import { genFriendInv } from "./commands/utils/genFriend.js";
-import { aliasCmd, invokeAlias, processer } from "./commands/utils/alias.js";
+import { 
+    aliasCmd, 
+    invokeAlias, 
+    processer 
+} from "./commands/utils/alias.js";
 import { 
     nitroSniper, 
     isEnabled, 
@@ -22,7 +26,11 @@ import { jsExec } from "./commands/sys/jsExec.js";
 import { sysfetch } from "./commands/sys/sysfetch.js";
 
 /// COMMANDS - OTHER ///
-import { openRouterCmd, getModelForAI } from "./commands/other/openRouter.js";
+import { 
+    openRouterCmd, 
+    getModel, 
+    getLastModel 
+} from "./commands/other/openRouter.js";
 import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
 import { helpCmd } from "./commands/helpCmd.js";
 
@@ -199,17 +207,32 @@ export async function handle(message: Message) {
                 const newMatch = raw.match(/\s--new\b/);
                 const isNewConv = Boolean(newMatch);
                 const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
-                const orRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
-                const m = cleaned.match(orRegex);
-
-                if (!m) {
-                    message.reply("**Error:** Invalid or command format");
+                const fullRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
+                const fullMatch = cleaned.match(fullRegex);
+                
+                if (fullMatch) {
+                    const [, model, userPrompt, sysPrompt] = fullMatch;
+                    await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
+                    break;
+                }
+                
+                const promptOnlyRegex = /^or\s+"([^"]+)"$/i;
+                const promptMatch = cleaned.match(promptOnlyRegex);
+                
+                if (promptMatch) {
+                    const [, userPrompt] = promptMatch;
+                    const lastModel = getLastModel(message.channelId);
+                    
+                    if (!lastModel) {
+                        message.reply("**Error:** No model specified and no previous model found for this channel. Use: `or <model> \"prompt\"`");
+                        break;
+                    }
+                    
+                    await openRouterCmd(message, lastModel, userPrompt, undefined, isNewConv);
                     break;
                 }
 
-                const [, model, userPrompt, sysPrompt] = m;
-
-                await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
+                message.reply("**Error:** Invalid or command format. Use: `or <model> \"prompt\" [\"system\"]` or `or \"prompt\"` (uses last model)");
                 break;
             }
 
@@ -240,7 +263,7 @@ client.on("messageCreate", async (message) => {
     const repliedId = message.reference?.messageId;
 
     if (repliedId) {
-        const model = getModelForAI(repliedId);
+        const model = getModel(repliedId);
         const isOwner = message.author.username === client.user?.username;
         const isSharedUser = sharedUsers.length > 0 && sharedUsers.includes(message.author.id);
 

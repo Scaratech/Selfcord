@@ -2,11 +2,57 @@ import { Message } from "discord.js-selfbot-v13";
 import fs from 'fs';
 import path from 'path';
 
-const lastModelMap: Record<string, string> = {};
-const aiModelMap = new Map<string, string>();
+const lmm: Record<string, string> = {};
+const aimm = new Map<string, string>();
 
-export function getModelForAI(messageId: string): string | undefined {
-    return aiModelMap.get(messageId);
+const convoDir = path.resolve(process.cwd(), 'conversations');
+const lmmFile = path.join(convoDir, '.last_model_map.json');
+const aimmFile = path.join(convoDir, '.ai_model_map.json');
+
+function loadPersistance() {
+    if (!fs.existsSync(convoDir)) {
+        fs.mkdirSync(convoDir, { recursive: true });
+    }
+
+    if (fs.existsSync(lmmFile)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(lmmFile, 'utf-8'));
+            Object.assign(lmm, data);
+        } catch (err) {
+            console.error('Failed to load lmm:', err);
+        }
+    }
+
+    if (fs.existsSync(aimmFile)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(aimmFile, 'utf-8'));
+
+            for (const [key, value] of Object.entries(data)) {
+                aimm.set(key, value as string);
+            }
+        } catch (err) {
+            console.error('Failed to load aimm:', err);
+        }
+    }
+}
+
+function savePersistance() {
+    try {
+        fs.writeFileSync(lmmFile, JSON.stringify(lmm, null, 2));
+        fs.writeFileSync(aimmFile, JSON.stringify(Object.fromEntries(aimm), null, 2));
+    } catch (err) {
+        console.error('Failed to save persisted data:', err);
+    }
+}
+
+loadPersistance();
+
+export function getModel(messageId: string): string | undefined {
+    return aimm.get(messageId);
+}
+
+export function getLastModel(channelId: string): string | undefined {
+    return lmm[channelId];
 }
 
 export async function openRouterCmd(
@@ -16,20 +62,21 @@ export async function openRouterCmd(
     sysPrompt?: string,
     isNew?: boolean
 ) {
-    lastModelMap[message.channelId] = model;
+    lmm[message.channelId] = model;
+    savePersistance();
 
     if (!process.env.OR_KEY) {
-        message.reply("**Error:** OpenRouter API key not set");
+        message.reply("**err:** OpenRouter API key not set");
         return;
     }
 
     if (!model) {
-        message.reply("**Error:** No model specified");
+        message.reply("**err:** No model specified");
         return;
     }
 
     if (!userPrompt) {
-        message.reply("**Error:** No user prompt specified");
+        message.reply("**err:** No user prompt specified");
         return;
     }
 
@@ -72,8 +119,8 @@ export async function openRouterCmd(
     console.log('[debug] OR response received');
 
     if (!req.ok) {
-        message.reply(`**Error:** ${req.status} ${req.statusText}`);
-        console.error('Error response:', await req.text());
+        message.reply(`**err:** ${req.status} ${req.statusText}`);
+        console.error('err response:', await req.text());
 
         return;
     }
@@ -85,5 +132,7 @@ export async function openRouterCmd(
     fs.writeFileSync(convoFile, JSON.stringify(convo, null, 2));
 
     const aiMsg = await message.reply(`**[AI]**: ${reply}`);
-    aiModelMap.set(aiMsg.id, model);
+    aimm.set(aiMsg.id, model);
+
+    savePersistance();
 }
