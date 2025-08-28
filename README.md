@@ -137,3 +137,15 @@ Toggles on and off a nitro sniper
 Examples:
 - `$sc ns`
 - `$sc ns on`
+
+
+## `clyde <"prompt"|--purge|--ai <model>>`
+DiY Clyde, re-incarnated using DeepSeek v3 0324
+
+Examples:
+- `$clyde wsg`
+    - Chat with Clyde
+- `$clyde --purge`
+    - Delete Clydes memory
+- `$clyde --ai deepseek/deepseek-chat-v3-0324:free`
+    - Specifies a model to use

@@ -31,6 +31,7 @@ import {
     getModel, 
     getLastModel 
 } from "./commands/other/openRouter.js";
+import { clydeCmd, getClydeChannel } from "./commands/other/clyde.js";
 import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
 import { helpCmd } from "./commands/helpCmd.js";
 
@@ -236,8 +237,19 @@ export async function handle(message: Message) {
                 break;
             }
 
+            case 'test': {
+                message.reply("Test command - functionality removed");
+                break;
+            }
+
             case 'gh': {
                 await githubCommitCmd(message, args);
+                break;
+            }
+
+            case 'clyde': {
+                const userPrompt = args.join(' ');
+                await clydeCmd(message, userPrompt);
                 break;
             }
             /////////////
@@ -264,11 +276,17 @@ client.on("messageCreate", async (message) => {
 
     if (repliedId) {
         const model = getModel(repliedId);
+        const clydeChannelId = getClydeChannel(repliedId);
         const isOwner = message.author.username === client.user?.username;
         const isSharedUser = sharedUsers.length > 0 && sharedUsers.includes(message.author.id);
 
         if (model && (isOwner || isSharedUser)) {
             await openRouterCmd(message, model, message.content);
+            return;
+        }
+
+        if (clydeChannelId && (isOwner || isSharedUser)) {
+            await clydeCmd(message, message.content);
             return;
         }
     }

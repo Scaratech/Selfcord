@@ -38,6 +38,8 @@ export function helpCmd() {
     - Scrape all commits from a GitHub user for all usernames and emails associated
 - or <model> "user prompt" "system prompt (optionally)" [--new]
     - Chat with an OpenRouter model (System prompt is optional), \`--new\` resets conversation history
+- clyde <message | --model <model_name> | --purge>
+    - Send a message to DiY Clyde, please see docs for more info
 
 ## Credit
 Selfcord Author: \`scaratek.dev\` (on Discord)
