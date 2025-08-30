@@ -32,6 +32,8 @@ export function helpCmd() {
     - Generate a friend invite link
 - ns <on|off>
     - Toggle nitro sniper on or off
+- wd <CHANNEL_ID> <txt|json> [--stop | --list]
+    - Watches for all messages (including deleted/edited ones) in a channel given an ID and stored given a format
 
 ## Other
 - gh <username>

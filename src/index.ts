@@ -2,17 +2,25 @@
 import { messageExporter } from "./commands/utils/messageExporter.js";
 import { messasgePurger } from "./commands/utils/messagePurger.js";
 import { genFriendInv } from "./commands/utils/genFriend.js";
-import { 
-    aliasCmd, 
-    invokeAlias, 
-    processer 
+import {
+    aliasCmd,
+    invokeAlias,
+    processer
 } from "./commands/utils/alias.js";
-import { 
-    nitroSniper, 
-    isEnabled, 
-    attemptSnipe, 
-    extractCode 
+import {
+    nitroSniper,
+    isEnabled,
+    attemptSnipe,
+    extractCode
 } from "./commands/utils/nitroSniper.js";
+import {
+    watchChannel,
+    stopWatch,
+    getActiveWatches,
+    getWatchSession,
+    startWatchSession,
+    saveWatchData
+} from "./commands/utils/watchdog.js";
 
 /// COMMANDS - NETWORK ///
 import { ipLookup } from "./commands/network/ip.js";
@@ -26,10 +34,10 @@ import { jsExec } from "./commands/sys/jsExec.js";
 import { sysfetch } from "./commands/sys/sysfetch.js";
 
 /// COMMANDS - OTHER ///
-import { 
-    openRouterCmd, 
-    getModel, 
-    getLastModel 
+import {
+    openRouterCmd,
+    getModel,
+    getLastModel
 } from "./commands/other/openRouter.js";
 import { clydeCmd, getClydeChannel } from "./commands/other/clyde.js";
 import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
@@ -86,6 +94,14 @@ const sharedUsers: string[] = process.env.SHARED
         .map(id => id.trim().replace(/[\[\]]/g, ''))
         .filter(id => id.length > 0)
     : [];
+
+const watchdogChannels: string[] = process.env.WD_CHANNELS
+    ? process.env.WD_CHANNELS.split(',')
+        .map(id => id.trim().replace(/[\[\]]/g, ''))
+        .filter(id => id.length > 0)
+    : [];
+
+const watchdogFormat: 'txt' | 'json' = (process.env.WD_FMT?.toLowerCase() as 'txt' | 'json') || 'txt';
 
 export async function handle(message: Message) {
     const args = message.content.slice(realPrefix.length).trim().split(/\s+/);
@@ -153,6 +169,46 @@ export async function handle(message: Message) {
                 nitroSniper(message, status);
                 break;
             }
+
+            case 'wd': {
+                const channelId = args[0];
+                const format = args[1] as 'txt' | 'json';
+                const isStop = args.includes('--stop');
+                const isList = args.includes('--list');
+
+                if (isList) {
+                    const activeWatches = getActiveWatches();
+
+                    if (activeWatches.length === 0) {
+                        message.reply('**No active watches**');
+                    } else {
+                        message.reply([
+                            '**Watches:**',
+                            ...activeWatches.map(id => `- <#${id}>`)
+                        ].join('\n'));
+                    }
+
+                    break;
+                }
+
+                if (!channelId) {
+                    message.reply('**Usage**: `wd <CHANNEL_ID> <txt|json> [--stop | --list]`');
+                    break;
+                }
+
+                if (isStop) {
+                    stopWatch(message, channelId);
+                    break;
+                }
+
+                if (!format) {
+                    message.reply('**Usage**: `wd <CHANNEL_ID> <txt|json> [--stop | --list]`');
+                    break;
+                }
+
+                await watchChannel(message, channelId, format);
+                break;
+            }
             ////////////
 
 
@@ -210,25 +266,25 @@ export async function handle(message: Message) {
                 const cleaned = isNewConv ? raw.replace(/\s--new\b/, '') : raw;
                 const fullRegex = /^or\s+(\S+)\s+"([^"]+)"(?:\s+"([^"]+)")?$/i;
                 const fullMatch = cleaned.match(fullRegex);
-                
+
                 if (fullMatch) {
                     const [, model, userPrompt, sysPrompt] = fullMatch;
                     await openRouterCmd(message, model, userPrompt, sysPrompt, isNewConv);
                     break;
                 }
-                
+
                 const promptOnlyRegex = /^or\s+"([^"]+)"$/i;
                 const promptMatch = cleaned.match(promptOnlyRegex);
-                
+
                 if (promptMatch) {
                     const [, userPrompt] = promptMatch;
                     const lastModel = getLastModel(message.channelId);
-                    
+
                     if (!lastModel) {
                         message.reply("**Error:** No model specified and no previous model found for this channel. Use: `or <model> \"prompt\"`");
                         break;
                     }
-                    
+
                     await openRouterCmd(message, lastModel, userPrompt, undefined, isNewConv);
                     break;
                 }
@@ -272,6 +328,28 @@ client.on("messageCreate", async (message) => {
         }
     }
 
+    const sessions = getActiveWatches();
+
+    for (const channelId of sessions) {
+        if (message.channelId === channelId) {
+            const session = getWatchSession(channelId);
+
+            if (session && session.isActive) {
+                const messageLog = {
+                    id: message.id,
+                    author: `${message.author.username}#${message.author.discriminator}`,
+                    authorId: message.author.id,
+                    timestamp: message.createdTimestamp,
+                    content: message.content,
+                    state: 'sent' as const
+                };
+
+                session.messages.set(message.id, messageLog);
+                await saveWatchData(session);
+            }
+        }
+    }
+
     const repliedId = message.reference?.messageId;
 
     if (repliedId) {
@@ -298,9 +376,9 @@ client.on("messageCreate", async (message) => {
         return;
     }
     if (
-        isOwner && 
-        message.content && 
-        !message.content.startsWith(realPrefix) 
+        isOwner &&
+        message.content &&
+        !message.content.startsWith(realPrefix)
         && processer(message.content)
     ) {
         const firstWord = message.content.trim().split(/\s+/)[0];
@@ -321,14 +399,17 @@ client.on("ready", async () => {
 
     const header = chalk.green.bold('Selfcord ready');
     const info = [
-        chalk.cyan(`Logged in as ${client.user?.tag}`),
-        chalk.cyan(`Using prefix: ${prefix}`),
-        chalk.cyan(`Shared users: ${sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None'}`)
+        chalk.yellow(`Logged in as: ${chalk.cyan(client.user?.tag)}`),
+        chalk.yellow(`Using prefix: ${chalk.cyan(prefix)}`),
+    ];
+    const multi = [
+        chalk.yellow(`Shared users: ${chalk.cyan(sharedUsers.length > 0 ? `${sharedUsers.length} user(s)` : 'None')}`),
+        chalk.yellow(`WD channels: ${chalk.cyan(watchdogChannels.length > 0 ? `${watchdogChannels.length} channel(s)` : 'None')}`)
     ];
     const support = [
         chalk.yellow(`OpenRouter support: ${process.env.OR_KEY ? chalk.green('Yes') : chalk.red('No')}`),
-        chalk.yellow(`GitHub Support: ${process.env.GITHUB_TOKEN ? chalk.green('Yes') : chalk.red('No')}`),
-        chalk.yellow(`Nitro Sniper: ${isEnabled() ? chalk.green('Enabled') : chalk.red('Disabled')}`)
+        chalk.yellow(`GitHub support: ${process.env.GITHUB_TOKEN ? chalk.green('Yes') : chalk.red('No')}`),
+        chalk.yellow(`Nitro sniper: ${isEnabled() ? chalk.green('Enabled') : chalk.red('Disabled')}`)
     ];
 
     const allLines = [header, ...info, ...support];
@@ -353,16 +434,60 @@ client.on("ready", async () => {
     }
 
     console.log(separator);
+
+    for (const line of multi) {
+        console.log(createLine(line));
+    }
+
+    console.log(separator);
+
     for (const line of support) {
         console.log(createLine(line));
     }
 
-
     console.log(border);
+
+    if (watchdogChannels.length > 0) {
+        try {
+            for (const channelId of watchdogChannels) {
+                const success = await startWatchSession(client, channelId, watchdogFormat);
+
+                if (!success) {
+                    console.log(chalk.red(`Failed to start watching channel ${channelId}`));
+                }
+            }
+        } catch (err) {
+            console.error('Failed to auto-watch channels:', err);
+        }
+    }
 });
 
 
 client.on("messageUpdate", async (_oldMessage, newMessage) => {
+    const sessions = getActiveWatches();
+
+    for (const channelId of sessions) {
+        if (newMessage.channelId === channelId) {
+            const session = getWatchSession(channelId);
+
+            if (session && session.isActive) {
+                const existing = session.messages.get(newMessage.id);
+
+                if (existing) {
+                    const editCount = session.editCounts.get(newMessage.id) || 0;
+                    const newEditCount = editCount + 1;
+
+                    existing.previousContent = existing.content;
+                    existing.content = newMessage.content || '';
+                    existing.state = 'edited';
+                    existing.editNumber = newEditCount;
+
+                    session.editCounts.set(newMessage.id, newEditCount);
+                    await saveWatchData(session);
+                }
+            }
+        }
+    }
 
     if (
         newMessage.author?.username !== client.user?.username &&
@@ -374,9 +499,9 @@ client.on("messageUpdate", async (_oldMessage, newMessage) => {
     const isOwner = newMessage.author?.username === client.user?.username;
 
     if (
-        isOwner && 
-        newMessage.content && 
-        !newMessage.content.startsWith(realPrefix) 
+        isOwner &&
+        newMessage.content &&
+        !newMessage.content.startsWith(realPrefix)
         && processer(newMessage.content)
     ) {
         const firstWord = newMessage.content.trim().split(/\s+/)[0];
@@ -390,6 +515,25 @@ client.on("messageUpdate", async (_oldMessage, newMessage) => {
     }
 
     await handle(newMessage as Message);
+});
+
+client.on("messageDelete", async (message) => {
+    const sessions = getActiveWatches();
+
+    for (const channelId of sessions) {
+        if (message.channelId === channelId) {
+            const session = getWatchSession(channelId);
+
+            if (session && session.isActive) {
+                const existing = session.messages.get(message.id);
+
+                if (existing) {
+                    existing.state = 'deleted';
+                    await saveWatchData(session);
+                }
+            }
+        }
+    }
 });
 
 console.log('Loading...');

@@ -149,3 +149,14 @@ Examples:
     - Delete Clydes memory
 - `$clyde --ai deepseek/deepseek-chat-v3-0324:free`
     - Specifies a model to use
+
+## `wd <CHANNEL_ID> <json|txt> [--stop | --list]`
+Watches for all messages (including deleted and edited ones) in a channel
+
+Examples:
+- `$wd 1285766975171330130 --txt`
+    - Starts watching `1285766975171330130` as a txt file
+- `$wd --list`
+    - Lists all watches
+- `$wd 1285766975171330130 --stop`
+    - Stops watching `1285766975171330130`
