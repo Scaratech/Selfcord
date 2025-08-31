@@ -1,7 +1,7 @@
 # Commands
 All selfbot commands
 
-## Discord relate
+## Discord Related
 
 ### `friend`
 Generate a friend URI
@@ -44,18 +44,73 @@ Example II: $wd --list
 Example III: $wd 1285766975171330130 --stop
 ```
 
-## Utility Related
-
+## Selfbot Related
 ### `alias`
 Aliases
 ```
-$ alias [-n] <alias> <text>
+$alias [-n] <alias> <text>
 
 Example I: $alias test $ip 1.1.1.1 # $test -> $ip 1.1.1.1 (and runs command)
 Example II: $alias meow this is a string # $meow -> this is a string
 Example III: $alias -n meow mrrp -> meow (with no prefix) -> mrrp 
 ```
 
+### `shared`
+Manage shared users
+```
+$shared <add | remove | list> <uid>
+
+Example I: $shared add 1168045766770696193
+Example II: $shared list
+Example III $shared remove 1168045766770696193
+```
+
+### `pre`
+Configure on startup options
+
+#### `pre ns`
+Toggles the nitro sniper on/off on startup (and curren)
+```
+$pre ns <on | off>
+Example: $pre ns on
+```
+
+#### `pre wd`
+Configures on startup watchdog
+```
+$pre wd <list | add | remove | fmt> <chanel_id | <json | txt>>
+
+Example I: $pre wd fmt json # Sets format to json
+Example II: $pre wd add 1285766975171330130
+Example III $pre wd list
+Example IV: $pre wd remove 1285766975171330130 
+```
+
+### `ping`
+Shows latency of the Discord API and WS heartbeat
+```
+$ping
+```
+
+### `console`
+Attaches file containing console output
+```
+$console
+```
+
+### `stop`
+Stops Selfcord
+```
+$stop
+```
+
+### `restart`
+Rebuilds and restarts Selfcord
+```
+$restart
+```
+
+## Utility Related
 ### `calc`
 Calculator
 ```

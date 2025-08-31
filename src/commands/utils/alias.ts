@@ -1,13 +1,8 @@
 import { Message } from 'discord.js-selfbot-v13';
-
 import fs from 'fs';
 import path from 'path';
-import { pathToFileURL } from 'url';
-
-import { config } from "../../config.js";
 
 const aliasPath = path.resolve(process.cwd(), '.aliases.json');
-const PREFIX = config.prefix;
 
 type entry = {
     value: string;
@@ -104,14 +99,6 @@ export async function invokeAlias(message: Message, command: string): Promise<bo
     }
 
     await message.edit(value);
-
-    if (value.startsWith(PREFIX)) {
-        const moduleUrl = pathToFileURL(path.resolve(process.cwd(), 'dist/commands/handler.js')).href;
-        const { handle } = await import(moduleUrl);
-
-        await handle(message);
-    }
-
     return true;
 }
 

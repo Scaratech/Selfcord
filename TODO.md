@@ -1,20 +1,4 @@
 ```
-$shared list
-$shared add <uid>
-$shared remove <uid>
-
-$pre ns <on|off>
-
-$pre wd add <channel_id>
-$pre wd remove <channel_id>
-$pre wd fmt <json|txt>
-
-$prefix <prefix>
-$uptime
-$stop
-$ping
-$console
-
 $hypesquad <house>
 $spam <amount> <msg>
 $fetch <user|server> <uid>

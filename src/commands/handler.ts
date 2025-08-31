@@ -11,6 +11,13 @@ import { aliasCmd, invokeAlias } from "./utils/alias.js";
 import { edHandler } from "./utils/encDec.js";
 import { hasher } from "./utils/hasher.js";
 import { calc } from "./utils/calc.js";
+import { sharedCmd, preCmd } from "./utils/updater.js";
+import { 
+    stopCmd, 
+    restartCmd, 
+    pingCmd, 
+    consoleCmd 
+} from "./utils/selfbot.js";
 
 /// COMMANDS - NETWORK ///
 import { ipLookup } from "./network/ip.js";
@@ -67,10 +74,6 @@ export async function handle(message: Message) {
         switch (command) {
             case 'help':
                 message.reply(helpCmd());
-                break;
-
-            case 'ping':
-                message.reply('Pong!');
                 break;
 
             /// DISCORD ///
@@ -192,6 +195,35 @@ export async function handle(message: Message) {
                 break;
             }
 
+            case 'shared': {
+                await sharedCmd(message, args);
+                break;
+            }
+
+            case 'pre': {
+                await preCmd(message, args);
+                break;
+            }
+
+            case 'stop': {
+                stopCmd(message);
+                break;
+            }
+        
+            case 'restart': {
+                restartCmd(message);
+                break;
+            }
+              
+            case 'ping': {
+                pingCmd(message);
+                break;
+            }
+              
+            case 'console': {
+                consoleCmd(message);
+                break;
+            }
             ////////////
 
             /// NETWORK ///
