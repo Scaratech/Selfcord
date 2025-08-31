@@ -120,6 +120,7 @@ client.on("ready", async () => {
     const support = [
         chalk.yellow(`OpenRouter support: ${config.apis.openrouter_key ? chalk.green('Yes') : chalk.red('No')}`),
         chalk.yellow(`GitHub support: ${config.apis.github_token ? chalk.green('Yes') : chalk.red('No')}`),
+        chalk.yellow(`Numverify support: ${config.apis.numverify_key ? chalk.green('Yes') : chalk.red('No')}`),
         chalk.yellow(`Nitro sniper: ${isEnabled() ? chalk.green('Enabled') : chalk.red('Disabled')}`)
     ];
 
