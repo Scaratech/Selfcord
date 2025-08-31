@@ -45,7 +45,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
             const userId = args[1];
 
             if (!userId) {
-                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared add <user_id>', '#cdd6f4')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared - Usage', 'shared add <user_id>', '#cdd6f4')));
                 return;
             }
             
@@ -53,7 +53,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                 const configData = loadConfig();
 
                 if (configData.shared.includes(userId)) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Error', 'User is already shared', '#f38ba8')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Shared - Error', 'User is already shared', '#f38ba8')));
                     return;
                 }
                 
@@ -62,9 +62,9 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
 
                 config.shared.push(userId);
                 
-                message.edit(fmtEmbed(message.content, createEmbed('Added', `Added ${userId} to shared users`, '#a6e3a1')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared Users', `Added ${userId} to shared users`, '#a6e3a1')));
             } catch (err) {
-                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared - Error', `${err.message}`, '#f38ba8')));
                 console.error('Failed to add user to shared users:', err);
             }
             break;
@@ -73,7 +73,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
             const removeUserId = args[1];
 
             if (!removeUserId) {
-                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared remove <user_id>', '#cdd6f4')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared - Usage', 'shared remove <user_id>', '#cdd6f4')));
                 return;
             }
             
@@ -82,7 +82,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                 const index = configData.shared.indexOf(removeUserId);
 
                 if (index === -1) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Error', 'User is not in shared list', '#f38ba8')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Shared - Error', 'User is not in shared list', '#f38ba8')));
                     return;
                 }
                 
@@ -95,16 +95,16 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                     config.shared.splice(runtimeIndex, 1);
                 }
                 
-                message.edit(fmtEmbed(message.content, createEmbed('Removed', `Removed: ${removeUserId} from shared users`, '#a6e3a1')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared Users', `Removed: ${removeUserId} from shared users`, '#a6e3a1')));
             } catch (err) {
-                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
+                message.edit(fmtEmbed(message.content, createEmbed('Shared - Error', `${err.message}`, '#f38ba8')));
                 console.error('Failed to remove user from shared users:', err);
             }
 
             break;
 
         default:
-            message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared <list | add | remove> [user_id]', '#cdd6f4')));
+            message.edit(fmtEmbed(message.content, createEmbed('Shared - Usage', 'shared <list | add | remove> [user_id]', '#cdd6f4')));
     }
 }
 
@@ -116,7 +116,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
             const nsStatus = args[1]?.toLowerCase();
 
             if (!nsStatus || !['on', 'off'].includes(nsStatus)) {
-                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $pre ns <on|off>', '#cdd6f4')));
+                message.edit(fmtEmbed(message.content, createEmbed('Pre (NS) - Usage', 'pre ns <on|off>', '#cdd6f4')));
                 return;
             }
             
@@ -125,9 +125,9 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                 configData.nitro_sniper = nsStatus === 'on';
 
                 saveConfig(configData);
-                message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', `Nitro sniper ${nsStatus === 'on' ? 'enabled' : 'disabled'} on startup`, '#a6e3a1')));
+                message.edit(fmtEmbed(message.content, createEmbed('Pre (NS)', `Nitro sniper ${nsStatus === 'on' ? 'enabled' : 'disabled'} on startup`, '#a6e3a1')));
             } catch (err) {
-                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
+                message.edit(fmtEmbed(message.content, createEmbed('Pre (NS) - Error', `${err.message}`, '#f38ba8')));
                 console.error('Failed to toggle nitro sniper:', err);
             }
             break;
@@ -140,10 +140,10 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const wdConfig = loadConfig();
 
                     if (wdConfig.watchdog.channels.length === 0) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'No watchdog channels configured', '#f38ba8')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', 'No watchdog channels configured', '#f38ba8')));
                     } else {
                         const channelList = wdConfig.watchdog.channels.map(id => `- ${id}`).join('\n');
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Watchdog Channels:\n${channelList}\n\nFormat: ${wdConfig.watchdog.format}`, '#a6e3a1')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', `Watchdog Channels:\n${channelList}\n\nFormat: ${wdConfig.watchdog.format}`, '#a6e3a1')));
                     }
 
                     break;
@@ -152,7 +152,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const channelId = args[2];
 
                     if (!channelId) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd add <channel_id>', '#cdd6f4')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Usage', 'pre wd add <channel_id>', '#cdd6f4')));
                         return;
                     }
                     
@@ -160,15 +160,15 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                         const configData = loadConfig();
 
                         if (configData.watchdog.channels.includes(channelId)) {
-                            message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', 'Channel is already in watchdog list', '#f38ba8')));
+                            message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Error', 'Channel is already in watchdog list', '#f38ba8')));
                             return;
                         }
                         
                         configData.watchdog.channels.push(channelId);
                         saveConfig(configData);
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Added: ${channelId} to watchdog channels`, '#a6e3a1')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', `Added: ${channelId} to watchdog channels`, '#a6e3a1')));
                     } catch (err) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Error', `${err.message}`, '#f38ba8')));
                         console.error('Failed to add channel to watchdog:', err);
                     }
 
@@ -178,7 +178,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const removeChannelId = args[2];
 
                     if (!removeChannelId) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd remove <channel_id>', '#cdd6f4')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Usage', 'pre wd remove <channel_id>', '#cdd6f4')));
                         return;
                     }
                     
@@ -187,15 +187,15 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                         const index = configData.watchdog.channels.indexOf(removeChannelId);
 
                         if (index === -1) {
-                            message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'Channel is not in watchdog list', '#f38ba8')));
+                            message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', 'Channel is not in watchdog list', '#f38ba8')));
                             return;
                         }
                         
                         configData.watchdog.channels.splice(index, 1);
                         saveConfig(configData);
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Removed ${removeChannelId} from watchdog channels`, '#a6e3a1')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', `Removed ${removeChannelId} from watchdog channels`, '#a6e3a1')));
                     } catch (err) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Error', `${err.message}`, '#f38ba8')));
                         console.error('Failed to remove channel from watchdog:', err);
                     }
                     break;
@@ -204,7 +204,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const format = args[2]?.toLowerCase();
 
                     if (!format || !['json', 'txt'].includes(format)) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd fmt <json | txt>', '#cdd6f4')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Usage', 'pre wd fmt <json | txt>', '#cdd6f4')));
                         return;
                     }
                     
@@ -213,21 +213,21 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
 
                         configData.watchdog.format = format as "txt" | "json";
                         saveConfig(configData);
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Watchdog format set to ${format} for startup`, '#a6e3a1')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD)', `Watchdog format set to ${format} for startup`, '#a6e3a1')));
                     } catch (err) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
+                        message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Error', `${err.message}`, '#f38ba8')));
                         console.error('Failed to set watchdog format:', err);
                     }
 
                     break;
 
                 default:
-                    message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd <list | add | remove | fmt> [channel_id|format]', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Pre (WD) - Usage', 'pre wd <list | add | remove | fmt> [channel_id|format]', '#cdd6f4')));
             }
 
             break;
 
         default:
-            message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre <ns | wd> [options]', '#cdd6f4')));
+            message.edit(fmtEmbed(message.content, createEmbed('Pre - Usage', 'pre <ns | wd> [options]', '#cdd6f4')));
     }
 }

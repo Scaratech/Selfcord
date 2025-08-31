@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { config } from "../../config.js";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 interface Information {
     id: string;
@@ -250,14 +251,14 @@ export async function clydeCmd(message: Message, userPrompt: string) {
         const modelName = userPrompt.substring(8).trim();
 
         if (!modelName) {
-            message.reply("**[Clyde]**: No model specified. Usage: `--model <model_name>`");
+            message.edit(fmtEmbed(message.content, createEmbed('Clyde - Error', 'No model specified\n Usage: --model <model_name>', '#f38ba8')));
             return;
         }
         
         modelMap[message.channelId] = modelName;
         savePersistance();
 
-        message.reply(`**[Clyde]**: Model set to \`${modelName}\` for this channel`);
+        message.reply(fmtEmbed(message.content, createEmbed('Clyde', `Model set to ${modelName} for this channel`, '#a6e3a1')));
         return;
     }
 
@@ -271,28 +272,28 @@ export async function clydeCmd(message: Message, userPrompt: string) {
                 delete modelMap[cild];
 
                 savePersistance();
-                message.reply("**[Clyde]**: Memory wiped");
+                message.reply(fmtEmbed(message.content, createEmbed('Clyde', 'Memory wiped', '#a6e3a1')));
             } catch (err) {
                 console.error('Failed to delete Clyde memory:', err);
-                message.reply("**[Clyde]**: Failed to clear memory");
+                message.reply(fmtEmbed(message.content, createEmbed('Clyde - Error', 'Failed to clear memory', '#f38ba8')));
             }
         } else {
             delete modelMap[message.channelId];
 
             savePersistance();
-            message.reply("**[Clyde]**: No memory");
+            message.reply(fmtEmbed(message.content, createEmbed('Clyde', 'No memory', '#a6e311')));
         }
 
         return;
     }
 
     if (!config.apis.openrouter_key) {
-        message.reply("**Error:** OpenRouter API key not set");
+        message.edit(fmtEmbed(message.content, createEmbed('Clyde - Error', 'OpenRouter API key not set', '#f38ba8')));
         return;
     }
 
     if (!userPrompt) {
-        message.reply("**Error:** No prompt specified");
+        message.edit(fmtEmbed(message.content, createEmbed('Clyde - Error', 'No prompt specified', '#f38ba8')));
         return;
     }
 
@@ -360,7 +361,7 @@ export async function clydeCmd(message: Message, userPrompt: string) {
     });
 
     if (!req.ok) {
-        message.reply(`**Error:** ${req.status} ${req.statusText}`);
+        message.edit(fmtEmbed(message.content, createEmbed('Clyde - Error', `${req.status} ${req.statusText}`, '#f38ba8')));
         console.error('Error response:', await req.text());
         return;
     }

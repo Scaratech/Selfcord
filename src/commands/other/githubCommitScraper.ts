@@ -15,7 +15,7 @@ export async function githubCommitCmd(message: Message, args: string[]) {
     const username = args[0];
 
     if (!username) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No GitHub username provided', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('GitHub - Error', 'No GitHub username provided', '#f38ba8')));
         return;
     }
 
@@ -57,7 +57,7 @@ export async function githubCommitCmd(message: Message, args: string[]) {
 
             page++;
         } catch (err: any) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', `Error fetching commits: ${err.message}`, '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('GitHub - Error', `${err.message}`, '#f38ba8')));
             console.error(err);
     
             return;
@@ -77,12 +77,12 @@ export async function githubCommitCmd(message: Message, args: string[]) {
 
     const emailsText = Array.from(uniqueEmails).map(e => `  - ${e}`).join('\n');
     const namesText = Array.from(uniqueNames).map(n => `  - ${n}`).join('\n');
-    const resultMsg = `Results:\n- Unique emails:\n${emailsText}\n- Unique names:\n${namesText}`;
+    const resultMsg = `${emailsText}\n${namesText}`;
 
     await message.edit({ 
         content: fmtEmbed(
             message.content,
-            createEmbed('Results', resultMsg, '#a6e3a1')
+            createEmbed('GitHub - Results', resultMsg, '#a6e3a1')
         ), 
         files: [filePath] 
     });

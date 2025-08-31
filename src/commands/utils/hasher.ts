@@ -18,7 +18,7 @@ export function hasher(message: Message, type: string, msg: string) {
                 throw new Error(`Unknown hash type: \`${type}\``);
         }
     } catch (err) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', `${err.message}`, '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Hasher - Error', `${err.message}`, '#f38ba8')));
         console.error(`Error hashing: ${err.message}`);
     }
 }

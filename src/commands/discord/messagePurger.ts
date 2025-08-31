@@ -10,7 +10,7 @@ export async function messasgePurger(message: Message, target: string, shadow: b
         
         if (parsedTarget === null) {
             if (!shadow) {
-                await message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $purge <num>|at [--shadow]', '#cdd6f4')));
+                await message.edit(fmtEmbed(message.content, createEmbed('Purger - Usage', 'purge <num>|at [--shadow]', '#cdd6f4')));
             }
             return;
         }
@@ -24,7 +24,11 @@ export async function messasgePurger(message: Message, target: string, shadow: b
         console.error('Purge error:', error);
 
         if (!shadow) {
-            await message.edit(fmtEmbed(message.content, createEmbed('Error', 'Failed to purge messages', '#f38ba8')));
+            try {
+                await message.edit(fmtEmbed(message.content, createEmbed('Purger - Error', 'Failed to purge messages', '#f38ba8')));
+            } catch (editError) {
+                console.error('Failed to edit error message:', editError);
+            }
         }
     }
 }
@@ -44,42 +48,80 @@ function parseTarget(target: string): PurgeTarget | null {
 
 async function purgeAllMessages(message: Message, shadow: boolean): Promise<void> {
     let totalDeleted = 0;
-    let fetched: Collection<string, Message>;
+    let hasMore = true;
 
-    do {
-        fetched = await message.channel.messages.fetch({ limit: 100 });
-        const myMessages = fetched.filter(
-            (m: Message) => m.author.id === client.user?.id && !m.system && !m.pinned
-        );
+    while (hasMore) {
+        try {
+            const fetched = await message.channel.messages.fetch({ limit: 100 });
+            const myMessages = fetched.filter(
+                (m: Message) => m.author.id === client.user?.id && !m.system && !m.pinned
+            );
 
-        for (const msg of myMessages.values()) {
-            try {
-                await msg.delete();
-                totalDeleted++;
-            } catch { }
+            if (myMessages.size === 0) {
+                hasMore = false;
+                break;
+            }
+
+            const deletePromises = myMessages.map(msg => 
+                msg.delete().catch(() => null)
+            );
+            
+            const results = await Promise.allSettled(deletePromises);
+            const deleted = results.filter(result => result.status === 'fulfilled').length;
+            totalDeleted += deleted;
+
+            if (fetched.size < 100) {
+                hasMore = false;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+            console.error('Error during bulk delete:', error);
+            hasMore = false;
         }
-    } while (fetched.size === 100);
+    }
 
     if (!shadow) {
-        await message.edit(fmtEmbed(message.content, createEmbed('Purged', `Purged ${totalDeleted} messages`, '#a6e3a1')));
+        try {
+            await message.edit(fmtEmbed(message.content, createEmbed('Purger', `Purged ${totalDeleted} messages`, '#a6e3a1')));
+        } catch (editError) {
+            console.error('Failed to edit success message:', editError);
+        }
     }
 }
 
 async function purgeNumericMessages(message: Message, count: number, shadow: boolean): Promise<void> {
-    const fetched = await message.channel.messages.fetch({ limit: count + 1 });
-    const myMsgs = fetched
-        .filter((m: Message) => m.author.id === client.user?.id && !m.system && !m.pinned)
-        .first(count);
+    try {
+        const fetched = await message.channel.messages.fetch({ limit: count + 1 });
+        const myMsgs = fetched
+            .filter((m: Message) => m.author.id === client.user?.id && !m.system && !m.pinned)
+            .first(count);
 
-    let deletedCount = 0;
-    for (const msg of myMsgs) {
-        try {
-            await msg.delete();
-            deletedCount++;
-        } catch { }
-    }
+        if (myMsgs.length === 0) {
+            if (!shadow) {
+                await message.edit(fmtEmbed(message.content, createEmbed('Purger', 'No messages found to purge', '#cdd6f4')));
+            }
+            return;
+        }
 
-    if (!shadow) {
-        await message.edit(fmtEmbed(message.content, createEmbed('Purged', `Purged ${deletedCount} messages`, '#a6e3a1')));
+        const deletePromises = myMsgs.map(msg => 
+            msg.delete().catch(() => null)
+        );
+        
+        const results = await Promise.allSettled(deletePromises);
+        const deletedCount = results.filter(result => result.status === 'fulfilled').length;
+
+        if (!shadow) {
+            await message.edit(fmtEmbed(message.content, createEmbed('Purger', `Purged ${deletedCount} messages`, '#a6e3a1')));
+        }
+    } catch (error) {
+        console.error('Error during numeric purge:', error);
+        if (!shadow) {
+            try {
+                await message.edit(fmtEmbed(message.content, createEmbed('Purger - Error', 'Failed to purge messages', '#f38ba8')));
+            } catch (editError) {
+                console.error('Failed to edit error message:', editError);
+            }
+        }
     }
 }

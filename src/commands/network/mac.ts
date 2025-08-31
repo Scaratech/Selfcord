@@ -3,7 +3,7 @@ import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export async function macLookup(message: Message, mac: string) {
     if (!mac) {
-        message.reply(fmtEmbed(message.content, createEmbed('Usage', 'Usage: mac <mac>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('MAC - Usage', 'mac <mac>', '#cdd6f4')));
         return;
     }
 
@@ -11,7 +11,7 @@ export async function macLookup(message: Message, mac: string) {
         const req = await fetch(`https://www.macvendorlookup.com/api/v2/${mac}`);
 
         if (!req.ok) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: \`${req.statusText}\``, '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('MAC - Error', `${req.statusText}`, '#f38ba8')));
             console.error(`MAC lookup error: ${req.statusText}`);
             return;
         }
@@ -20,7 +20,7 @@ export async function macLookup(message: Message, mac: string) {
         const data = Array.isArray(res) ? res[0] : res;
 
         if (!data) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', 'No MAC address information found', '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('MAC - Error', 'No MAC address information found', '#f38ba8')));
             return;
         }
 
@@ -37,9 +37,9 @@ Address two: ${data.addressL2 || 'N/A'}
 Address three: ${data.addressL3 || 'N/A'}
         `;
 
-        message.edit(fmtEmbed(message.content, createEmbed('MAC Info', content, '#a6e3a1')));
+        message.edit(fmtEmbed(message.content, createEmbed('MAC Lookup', content, '#a6e3a1')));
     } catch (err) {
-        message.reply(`**Error:** \`${err.message}\``);
+        message.edit(fmtEmbed(message.content, createEmbed('MAC - Error', `${err.message}`, '#f38ba8')));
         console.error(`MAC lookup error: ${err.message}`);
     }
 }

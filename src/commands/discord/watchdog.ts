@@ -28,21 +28,21 @@ const watchSessions = new Map<string, WatchSession>();
 export async function watchChannel(message: Message, channelId: string, format: 'txt' | 'json') {
     try {
         if (!['txt', 'json'].includes(format)) {
-            return message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $wd <CHANNEL_ID> <txt | json> [--stop | --list]', '#cdd6f4')));
+            return message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'wd <channel_id> <txt | json> [--stop | --list]', '#cdd6f4')));
         }
 
         if (watchSessions.has(channelId)) {
             const session = watchSessions.get(channelId)!;
 
             if (session.isActive) {
-                return message.edit(fmtEmbed(message.content, createEmbed('Already watching channel', `Already watching channel <#${channelId}>`, '#a6e3a1')));
+                return message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Already watching channel <#${channelId}>`, '#a6e3a1')));
             }
         }
 
         const channel = await message.client.channels.fetch(channelId);
 
         if (!channel || !('messages' in channel)) {
-            return message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid channel ID', '#f38ba8')));
+            return message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', 'Invalid channel ID', '#f38ba8')));
         }
 
         const watchDir = path.resolve(process.cwd(), 'watchs');
@@ -69,11 +69,11 @@ export async function watchChannel(message: Message, channelId: string, format: 
 
         await saveWatchData(session);
 
-        await message.edit(fmtEmbed(message.content, createEmbed('Started watching channel', `Started watching channel <#${channelId}> as ${format}`, '#a6e3a1')));
+        await message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Started watching channel <#${channelId}> as ${format}`, '#a6e3a1')));
 
     } catch (err) {
         console.error('Watch error:', err);
-        await message.edit(fmtEmbed(message.content, createEmbed('Error', 'Failed to start watching channel', '#f38ba8')));
+        await message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', 'Failed to start watching channel', '#f38ba8')));
     }
 }
 
@@ -81,14 +81,14 @@ export function stopWatch(message: Message, channelId: string) {
     const session = watchSessions.get(channelId);
 
     if (!session || !session.isActive) {
-        return message.edit(fmtEmbed(message.content, createEmbed('Not watching this channel', 'Not watching this channel', '#a6e3a1')));
+        return message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'Not watching this channel', '#a6e3a1')));
     }
 
     session.isActive = false;
     watchSessions.delete(channelId);
     
     saveWatchData(session);
-    message.edit(fmtEmbed(message.content, createEmbed('Stopped watching', `Stopped watching <#${channelId}>`, '#a6e3a1')));
+    message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Stopped watching <#${channelId}>`, '#a6e3a1')));
 }
 
 

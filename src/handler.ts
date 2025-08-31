@@ -129,7 +129,7 @@ export async function handle(message: Message) {
                 }
 
                 if (!channelId) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: wd <CHANNEL_ID> <txt|json> [--stop | --list]', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('WD - Usage', 'wd <channel_id> <txt | json> [--stop | --list]', '#cdd6f4')));
                     break;
                 }
 
@@ -139,7 +139,7 @@ export async function handle(message: Message) {
                 }
 
                 if (!format) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: wd <CHANNEL_ID> <txt|json> [--stop | --list]', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('WD - Usage', 'wd <channel_id> <txt | json> [--stop | --list]', '#cdd6f4')));
                     break;
                 }
 
@@ -206,7 +206,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: enc <b64 | uri | hex> <message>', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Enc/Dec - Usage', 'enc <b64 | uri | hex> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -220,7 +220,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: dec <b64 | uri | hex> <message>', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Enc/Dec - Usage', 'dec <b64 | uri | hex> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -234,7 +234,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: hash <sha1 | sha256 | md5> <message>', '#cdd6f4')));
+                    message.edit(fmtEmbed(message.content, createEmbed('Hasher - Usage', 'hash <sha1 | sha256 | md5> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -334,7 +334,7 @@ export async function handle(message: Message) {
                     const lastModel = getLastModel(message.channelId);
 
                     if (!lastModel) {
-                        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No model specified and no previous model found for this channel. Use: or <model> "prompt"', '#f38ba8')));
+                        message.edit(fmtEmbed(message.content, createEmbed('OR - Error', 'No model specified and no previous model found for this channel. Use: or <model> "prompt"', '#f38ba8')));
                         break;
                     }
 
@@ -342,7 +342,7 @@ export async function handle(message: Message) {
                     break;
                 }
 
-                message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid or command format. Use: or <model> "prompt" ["system"] or or "prompt" (uses last model)', '#f38ba8')));
+                message.edit(fmtEmbed(message.content, createEmbed('OR - Error', 'Invalid or command format. Use: or <model> "prompt" ["system"] or or "prompt" (uses last model)', '#f38ba8')));
                 break;
             }
 

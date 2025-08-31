@@ -40,7 +40,7 @@ export async function aliasCmd(message: Message, args: string[]) {
     const name = args[0];
 
     if (!name) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No alias name provided', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Alias - Error', 'No alias name provided', '#f38ba8')));
         return;
     }
 
@@ -64,7 +64,7 @@ export async function aliasCmd(message: Message, args: string[]) {
     }
 
     if (!val) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No alias value provided', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Alias - Error', 'No alias value provided', '#f38ba8')));
         return;
     }
 

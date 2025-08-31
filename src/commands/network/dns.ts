@@ -4,7 +4,7 @@ import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export async function dnsLookup(message: Message, type: string, target: string) {
     if (!type || !target) {
-        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: dns <record> <hostname>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('DNS - Usage', 'dns <record> <hostname>', '#cdd6f4')));
         return;
     }
 
@@ -81,7 +81,7 @@ export async function dnsLookup(message: Message, type: string, target: string) 
                 records = await dnsPromises.resolve(target, 'URI');
                 break;
             default:
-                message.edit(fmtEmbed(message.content, createEmbed('Error', `Unsupported DNS record type: ${recordType}`, '#f38ba8')));
+                message.edit(fmtEmbed(message.content, createEmbed('DNS - Error', `Unsupported DNS record type: ${recordType}`, '#f38ba8')));
                 return;
         }
 
@@ -93,7 +93,7 @@ export async function dnsLookup(message: Message, type: string, target: string) 
 
         message.edit(fmtEmbed(message.content, createEmbed('DNS Lookup', `${header}\n${output}`, '#a6e3a1')));
     } catch (err) {
-        message.reply(fmtEmbed(message.content, createEmbed('Error', `Error resolving DNS: ${err.code || err.message}`, '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('DNS - Error', `Error resolving DNS: ${err.code || err.message}`, '#f38ba8')));
         console.error(`DNS resolution error for ${target} (${recordType}):`, err);
     }
 }

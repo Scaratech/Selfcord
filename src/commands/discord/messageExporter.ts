@@ -1,6 +1,7 @@
 import { Message } from "discord.js-selfbot-v13";
 import fs from "fs";
 import path from "path";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 interface MessageData {
     id: string;
@@ -9,9 +10,11 @@ interface MessageData {
     content: string;
 }
 
-let msg: Message;
+let content: string;
 
 export async function messageExporter(message: Message, target: string, shadow: boolean = false){
+    content = message.content;
+
     try {
         const dir = path.resolve(process.cwd(), 'exports');
 
@@ -21,14 +24,14 @@ export async function messageExporter(message: Message, target: string, shadow: 
 
         if (!['json', 'txt'].includes(target)) {
             if (!shadow) {
-                return message.reply("**Usage:** `export <json|txt> [--shadow]`");
+                return message.edit(fmtEmbed(message.content, createEmbed('Exporter - Usage', 'export <json | txt> [--shadow]', '#cdd6f4')));
             }
 
             return;
         }
         
         if (!shadow) {
-            msg = await message.reply(`**Starting export (${target})...**`);
+            message.edit(fmtEmbed(content, createEmbed('Exporter', `Starting export (${target})`, '#a6e3a1')));
         }
 
         const all: MessageData[] = [];
@@ -75,15 +78,13 @@ export async function messageExporter(message: Message, target: string, shadow: 
         }
 
         if (!shadow) {
-            await msg.edit(`**Exported ${all.length} messages**`);
-            msg.delete();
+            message.edit(fmtEmbed(content, createEmbed('Exporter', `Exported ${all.length} messages`, '#a6e3a1')));
         }
     } catch (error) {
         console.error('Export error:', error);
 
         if (!shadow) {
-            await msg.edit("**Error:** Failed to export messages");
-            msg.delete();
+            message.edit(fmtEmbed(content, createEmbed('Exporter - Error', 'Failed to export messages', '#f38ba8')));
         }
     }
 }

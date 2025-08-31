@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { config } from "../../config.js";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 const lmm: Record<string, string> = {};
 const aimm = new Map<string, string>();
@@ -69,17 +70,17 @@ export async function openRouterCmd(
     savePersistance();
 
     if (!config.apis.openrouter_key) {
-        message.reply("**err:** OpenRouter API key not set");
+        message.edit(fmtEmbed(message.content, createEmbed('OR - Error', 'OpenRouter API key not set', '#f38ba8')));
         return;
     }
 
     if (!model) {
-        message.reply("**err:** No model specified");
+        message.edit(fmtEmbed(message.content, createEmbed('OR - Error', 'No model specified', '#f38ba8')));
         return;
     }
 
     if (!userPrompt) {
-        message.reply("**err:** No user prompt specified");
+        message.edit(fmtEmbed(message.content, createEmbed('OR - Error', 'No user prompt specified', '#f38ba8')));
         return;
     }
 
@@ -123,7 +124,7 @@ export async function openRouterCmd(
     console.log('[debug] OR response received');
 
     if (!req.ok) {
-        message.reply(`**err:** ${req.status} ${req.statusText}`);
+        message.edit(fmtEmbed(message.content, createEmbed('OR -', `${req.status} ${req.statusText}`, '#f38ba8')));
         console.error('err response:', await req.text());
 
         return;

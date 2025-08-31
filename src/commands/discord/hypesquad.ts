@@ -16,6 +16,6 @@ export function setHypesquad(message: Message, house: string) {
         client.user.setHypeSquad(0);
         message.edit(fmtEmbed(message.content, createEmbed('Hypesquad', 'Hypesquad house reset', '#cdd6f4')));
     } else {
-        message.edit(fmtEmbed(message.content, createEmbed('Usage', `hypesquad <brilliance | balance | bravery> [--reset]`, '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('Hypesquad - Usage', `hypesquad <brilliance | balance | bravery> [--reset]`, '#cdd6f4')));
     }
 }

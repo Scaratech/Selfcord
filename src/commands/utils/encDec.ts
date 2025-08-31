@@ -42,7 +42,7 @@ export function edHandler(
             message.edit(fmtEmbed(message.content, createEmbed('Decoded', `${decode(target, msg)}`, '#a6e3a1')));
         }
     } catch (error: any) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', `${error.message}`, '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Enc/Dec - Error', `${error.message}`, '#f38ba8')));
         console.error(`Error encoding/decoding: ${error.message}`);
     }
 }

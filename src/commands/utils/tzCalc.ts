@@ -11,9 +11,9 @@ export function tzCalc(message: Message, tz1: string, tz2: string) {
         const response = `Time in ${tz1.toUpperCase()}: ${timeInTz1}\n` +
             `Time in ${tz2.toUpperCase()}: ${timeInTz2}`;
         
-        message.edit(fmtEmbed(message.content, createEmbed('Timezone Converter', response, '#a6e3a1')));
+        message.edit(fmtEmbed(message.content, createEmbed('TZ Calc', response, '#a6e3a1')));
         
     } catch {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid TZ format (E.g. EST, PST, etc.)', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('TZ - Error', 'Invalid TZ format (E.g. EST, PST, etc.)', '#f38ba8')));
     }
 }

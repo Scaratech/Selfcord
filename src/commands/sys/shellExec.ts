@@ -1,15 +1,16 @@
 import { Message } from "discord.js-selfbot-v13";
 import { exec } from "child_process";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export function shellExec(message: Message, cmd: string) {
     if (!cmd) {
-        message.reply("**Usage:** `sh <command>`");
+        message.edit(fmtEmbed(message.content, createEmbed('SH - Usage', 'sh <command>', '#cdd6f4')));
         return;
     }
 
     exec(cmd, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
         if (error) {
-            message.reply(`**Error executing:** \`${cmd}\``);
+            message.edit(fmtEmbed(message.content, createEmbed('SH - Error', `Error executing: \`${cmd}\``, '#f38ba8')));
             console.error(`Error executing ${cmd}: ${error.message}`);
             return;
         }
@@ -17,7 +18,7 @@ export function shellExec(message: Message, cmd: string) {
         const output = stdout.length > 0 ? stdout : stderr;
 
         if (!output) {
-            message.reply("**No output was given**");
+            message.edit(fmtEmbed(message.content, createEmbed('SH - Info', 'No output was given', '#cdd6f4')));
             return;
         }
 

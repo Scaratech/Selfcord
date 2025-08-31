@@ -36,14 +36,14 @@ export function nitroSniper(message: Message, status: string) {
     } else if (status === 'off') {
         nsStatus = false;
     } else {
-        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Usage: nitro <on|off>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper - Usage', 'nitro <on | off>', '#cdd6f4')));
         return;
     }
 
     if (nsStatus) {
         message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Nitro sniper toggled on', '#a6e3a1')));
     } else {
-        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Nitro sniper toggled off', '#f38ba8#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Nitro sniper toggled off', '#f38ba8')));
     }
 }
 

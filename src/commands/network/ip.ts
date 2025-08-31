@@ -3,7 +3,7 @@ import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export async function ipLookup(message: Message, target: string) {
     if (!target) {
-        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: ip <ip>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('IP - Usage', 'ip <ip>', '#cdd6f4')));
         return;
     }
 
@@ -30,11 +30,11 @@ Is proxy: ${res.proxy}
 Is hosting: ${res.hosting}
         `;
 
-        message.edit(fmtEmbed(message.content, createEmbed('IP Info', template, '#a6e3a1')));
+        message.edit(fmtEmbed(message.content, createEmbed('IP Lookup', template, '#a6e3a1')));
         return;
     } else {
         console.error('IP fetch error:', res.message);
-        message.edit(fmtEmbed(message.content, createEmbed('Error', res.message, '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('IP - Error', res.message, '#f38ba8')));
         return;
     }
 }

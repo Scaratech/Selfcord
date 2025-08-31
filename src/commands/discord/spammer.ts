@@ -3,7 +3,7 @@ import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export function spammer(message: Message, amount: number, msg: string) {
     if (!amount || !message) {
-        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: spam <amount> <message>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('Spammer - Usage', 'spam <amount> <message>', '#cdd6f4')));
         return;
     }
 

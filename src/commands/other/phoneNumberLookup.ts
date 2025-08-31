@@ -14,19 +14,19 @@ export function normalize(pn: string) {
 
 export async function phoneNumberLookup(message: Message, pn: string) {
     if (!pn) {
-        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: phone <phone_number>', '#cdd6f4')));
+        message.edit(fmtEmbed(message.content, createEmbed('Phone - Usage', 'phone <phone_number>', '#cdd6f4')));
         return;
     }
 
     if (!config.apis.numverify_key) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'Numverify API key not set', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', 'Numverify API key not set', '#f38ba8')));
         return;
     }
 
     const num = normalize(pn);
     
     if (!num || num.length < 10) {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid phone number format', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', 'Invalid phone number format', '#f38ba8')));
         return;
     }
 
@@ -42,7 +42,7 @@ export async function phoneNumberLookup(message: Message, pn: string) {
         const req = await fetch(url);
 
         if (!req.ok) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', `${req.status} ${req.statusText}`, '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', `${req.status} ${req.statusText}`, '#f38ba8')));
             console.error(`Phone number lookup error: ${req.status} ${req.statusText}`);
             return;
         }
@@ -50,12 +50,12 @@ export async function phoneNumberLookup(message: Message, pn: string) {
         const res = await req.json();
 
         if (res.error) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', `${res.error.info || 'API Error'}`, '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', `${res.error.info || 'API Error'}`, '#f38ba8')));
             return;
         }
 
         if (!res.valid) {
-            message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid phone number', '#f38ba8')));
+            message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', 'Invalid phone number', '#f38ba8')));
             return;
         }
 
@@ -66,10 +66,10 @@ export async function phoneNumberLookup(message: Message, pn: string) {
 - Line Type: ${res.line_type || 'N/A'}
         `;
 
-        message.edit(fmtEmbed(message.content, createEmbed('Phone Number Info', content, '#a6e3a1')));
+        message.edit(fmtEmbed(message.content, createEmbed('Phone - Results', content, '#a6e3a1')));
 
     } catch (err) {
         console.error('Phone lookup error:', err);
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'Failed to lookup phone number', '#f38ba8')));
+        message.edit(fmtEmbed(message.content, createEmbed('Phone - Error', 'Failed to lookup phone number', '#f38ba8')));
     }
 }
