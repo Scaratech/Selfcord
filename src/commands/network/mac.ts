@@ -23,7 +23,7 @@ export async function macLookup(message: Message, mac: string) {
             return;
         }
 
-        message.reply(`# Result:
+        message.reply(`# MAC Info:
 - Hex:
   - Start: \`${data.startHex || 'N/A'}\`
   - End: \`${data.endHex || 'N/A'}\`
