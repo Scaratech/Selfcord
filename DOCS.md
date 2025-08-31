@@ -154,14 +154,14 @@ $neofetch
 
 ## Other
 
-### gh
+### `gh`
 Scrapes a GitHub account for all unique names and emails
 ```
 $gh <username>
 Example: $gh brandonhilkert
 ```
 
-### or
+### `or`
 Have chats with AI using OpenRouter
 ```
 or <model> <user prompt> <system prompt>
@@ -170,7 +170,7 @@ Example: $or deepseek/deepseek-chat-v3.1:free "hello" "you are a helpful assista
 # You can also reply to messages the AI replied to to communicate with it
 ```
 
-### clyde
+### `clyde`
 Clyde AI reincarnated
 ```
 $clyde <message> | [--purge] | [--model <model>]
