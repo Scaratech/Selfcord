@@ -1,9 +1,6 @@
 ```
-$hypesquad <house>
-$spam <amount> <msg>
 $fetch <user|server> <uid>
 
-$tzd <tz1> <tz2>
 $translate <from> <to> <msg>
 
 $json m <message_id>

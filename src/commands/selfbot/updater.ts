@@ -60,7 +60,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
 
                 config.shared.push(userId);
                 
-                message.reply(`**Success:** Added \`${userId}\` to shared users`);
+                message.reply(`**Added:** \`${userId}\` **to shared users**`);
             } catch (err) {
                 message.reply(`**Error:** ${err.message}`);
                 console.error('Failed to add user to shared users:', err);
@@ -93,7 +93,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                     config.shared.splice(runtimeIndex, 1);
                 }
                 
-                message.reply(`**Success:** Removed \`${removeUserId}\` from shared users`);
+                message.reply(`**Removed:** \`${removeUserId}\` **from shared users**`);
             } catch (err) {
                 message.reply(`**Error:** ${err.message}`);
                 console.error('Failed to remove user from shared users:', err);
@@ -164,8 +164,8 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                         
                         configData.watchdog.channels.push(channelId);
                         saveConfig(configData);
-                        message.reply(`**Success:** Added \`${channelId}\` to watchdog channels`);
-                    } catch (err: any) {
+                        message.reply(`**Added:** \`${channelId}\` **to watchdog channels**`);
+                    } catch (err) {
                         message.reply(`**Error:** ${err.message}`);
                         console.error('Failed to add channel to watchdog:', err);
                     }

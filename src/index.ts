@@ -12,7 +12,7 @@ import {
 } from "./commands/discord/watchdog.js";
 
 /// COMMANDS - UTILS ///
-import { invokeAlias, processer } from "./commands/utils/alias.js";
+import { invokeAlias, processer } from "./commands/selfbot/alias.js";
 
 /// COMMANDS - OTHER ///
 import { openRouterCmd, getModel } from "./commands/other/openRouter.js";

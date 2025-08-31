@@ -44,6 +44,23 @@ Example II: $wd --list
 Example III: $wd 1285766975171330130 --stop
 ```
 
+### `hypesquad`
+Sets your hypesquad house
+```
+$hypesquad <<brilliance | balance | bravery> | --reset>
+
+Example I: $hypesquad balance
+Example II: $hypesquad --reset # Removes your hypesquad
+```
+
+### `spam`
+Spam a message
+
+```
+$spam <amount> <msg>
+Example: $spam 5 meow meow meow
+```
+
 ## Selfbot Related
 ### `alias`
 Aliases
@@ -145,6 +162,14 @@ Example I: $hash sha1 meow
 Example II: $hash md5 woaw
 ```
 
+## `tz`
+Timezone converter
+
+```
+$tz <tz1> <tz2>
+Example: $tz est pst
+```
+
 ## Network Related
 
 ### `dns`
@@ -193,6 +218,8 @@ Example: $js return message;
 # Message = `Message` object
 # Client = `client` object (`src/client.ts`)
 # djs = Import of `discord.js-selfbot-v13` (E.g. `new client = djs.Client()`)
+# config = `config` object (`src/config.ts`)
+# prefix = `prefix` varible (`src/config.ts`)
 ```
 
 ### `sh`

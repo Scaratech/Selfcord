@@ -3,21 +3,25 @@ import { messageExporter } from "./discord/messageExporter.js";
 import { messasgePurger } from "./discord/messagePurger.js";
 import { genFriendInv } from "./discord/genFriend.js";
 import { nitroSniper } from "./discord/nitroSniper.js";
-import { watchChannel, stopWatch, getActiveWatches
-} from "./discord/watchdog.js";
+import { watchChannel, stopWatch, getActiveWatches } from "./discord/watchdog.js";
+import { setHypesquad } from "./discord/hypesquad.js";
+import { spammer } from "./discord/spammer.js";
 
-/// COMMANDS - UTILS ///
-import { aliasCmd, invokeAlias } from "./utils/alias.js";
-import { edHandler } from "./utils/encDec.js";
-import { hasher } from "./utils/hasher.js";
-import { calc } from "./utils/calc.js";
-import { sharedCmd, preCmd } from "./utils/updater.js";
+/// COMMANDS - SELFBOT ///
+import { aliasCmd, invokeAlias } from "./selfbot/alias.js";
+import { sharedCmd, preCmd } from "./selfbot/updater.js";
 import { 
     stopCmd, 
     restartCmd, 
     pingCmd, 
     consoleCmd 
-} from "./utils/selfbot.js";
+} from "./selfbot/selfbot.js";
+
+/// COMMANDS - UTILS ///
+import { edHandler } from "./utils/encDec.js";
+import { hasher } from "./utils/hasher.js";
+import { calc } from "./utils/calc.js";
+import { tzCalc } from "./utils/tzCalc.js";
 
 /// COMMANDS - NETWORK ///
 import { ipLookup } from "./network/ip.js";
@@ -139,59 +143,26 @@ export async function handle(message: Message) {
                 await watchChannel(message, channelId, format);
                 break;
             }
+
+            case 'hypesquad': {
+                const house = args[0];
+                setHypesquad(message, house);
+                break;
+            }
+
+            case 'spam': {
+                const amount = parseInt(args[0]);
+                const msg = args.slice(1).join(' ');
+
+                spammer(message, amount, msg);
+                break;
+            }
             ////////////
 
 
-            // UTILS ///
+            // SELFBOT ///
             case 'alias': {
                 await aliasCmd(message, args);
-                break;
-            }
-
-            case 'enc': {
-                const type = args[0];
-                const msg = args.slice(1).join(' ');
-
-                if (!type || !msg) {
-                    message.reply("**Usage:** `enc <type> <message>`");
-                    break;
-                }
-
-                //@ts-ignore
-                edHandler(message, 'encoded', type, msg);
-                break;
-            }
-
-            case 'dec': {
-                const type = args[0];
-                const msg = args.slice(1).join(' ');
-
-                if (!type || !msg) {
-                    message.reply("**Usage:** `dec <type> <message>`");
-                    break;
-                }
-
-                //@ts-ignore
-                edHandler(message, 'decode', type, msg);
-                break;
-            }
-
-            case 'hash': {
-                const type = args[0];
-                const msg = args.slice(1).join(' ');
-
-                if (!type || !msg) {
-                    message.reply("**Usage:** `hash <type> <message>`");
-                    break;
-                }
-
-                hasher(message, type, msg);
-                break;
-            }
-
-            case 'calc': {
-                const expr = args.join(' ');
-                calc(message, expr);
                 break;
             }
 
@@ -224,6 +195,64 @@ export async function handle(message: Message) {
                 consoleCmd(message);
                 break;
             }
+            ////////////
+
+            // UTILS ///
+            case 'enc': {
+                const type = args[0];
+                const msg = args.slice(1).join(' ');
+
+                if (!type || !msg) {
+                    message.reply("**Usage:** `enc <b64 | uri | hex> <message>`");
+                    break;
+                }
+
+                //@ts-ignore
+                edHandler(message, 'encoded', type, msg);
+                break;
+            }
+
+            case 'dec': {
+                const type = args[0];
+                const msg = args.slice(1).join(' ');
+
+                if (!type || !msg) {
+                    message.reply("**Usage:** `dec <b64 | uri | hex> <message>`");
+                    break;
+                }
+
+                //@ts-ignore
+                edHandler(message, 'decode', type, msg);
+                break;
+            }
+
+            case 'hash': {
+                const type = args[0];
+                const msg = args.slice(1).join(' ');
+
+                if (!type || !msg) {
+                    message.reply("**Usage:** `hash <sha1 | sha256 | md5> <message>`");
+                    break;
+                }
+
+                hasher(message, type, msg);
+                break;
+            }
+
+            case 'calc': {
+                const expr = args.join(' ');
+                calc(message, expr);
+                break;
+            }
+
+            case 'tz': {
+                const tz1 = args[0];
+                const tz2 = args[1];
+
+                tzCalc(message, tz1, tz2);
+                break;
+            }
+
             ////////////
 
             /// NETWORK ///
