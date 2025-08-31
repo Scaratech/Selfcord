@@ -1,11 +1,12 @@
 import { Message } from "discord.js-selfbot-v13";
 import axios from "axios";
+import { config } from "../../config.js";
 
 let nsStatus: boolean | null = null;
 
 function init(): boolean {
     if (nsStatus === null) {
-        nsStatus = String(process.env.NITRO_SNIPER).trim().toLowerCase() === 'true';
+        nsStatus = config.nitro_sniper;
     }
 
     return nsStatus;

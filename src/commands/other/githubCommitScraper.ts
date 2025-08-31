@@ -1,12 +1,14 @@
+import { Message } from "discord.js-selfbot-v13";
 import { Octokit } from "@octokit/rest";
+
 import fs from 'fs';
 import path from 'path';
-import { Message } from "discord.js-selfbot-v13";
+
+import { config } from "../../config.js";
 
 const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
+    auth: config.apis.github_token
 });
-
 
 export async function githubCommitCmd(message: Message, args: string[]) {
     const username = args[0];

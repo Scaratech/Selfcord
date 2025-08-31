@@ -1,8 +1,14 @@
+# NodeJS
 node_modules/
 dist/
-.env
+
+# Selfcord-specific
 exports/
 conversations/
 github/
-.aliases.json
 watchs/
+.aliases.json
+
+# Configs
+.env
+config.json

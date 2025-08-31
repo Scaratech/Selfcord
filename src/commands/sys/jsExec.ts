@@ -1,5 +1,6 @@
 import { client } from "../../client.js";
 import { Message } from "discord.js-selfbot-v13";
+import * as djs from 'discord.js-selfbot-v13';
 import util from 'util';
 
 export async function jsExec(message: Message, code: string) {
@@ -8,8 +9,8 @@ export async function jsExec(message: Message, code: string) {
         return;
     }
     try {
-        const asyncEval = new Function('message', 'client', `return (async () => { ${code} })();`);
-        let result = await asyncEval(message, client);
+        const asyncEval = new Function('message', 'client', 'djs', `return (async () => { ${code} })();`);
+        let result = await asyncEval(message, client, djs);
 
         if (typeof result === 'object') {
             result = util.inspect(result, { depth: 2 });

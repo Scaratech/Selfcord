@@ -1,6 +1,9 @@
 import { Message } from "discord.js-selfbot-v13";
+
 import fs from 'fs';
 import path from 'path';
+
+import { config } from "../../config.js";
 
 const lmm: Record<string, string> = {};
 const aimm = new Map<string, string>();
@@ -65,7 +68,7 @@ export async function openRouterCmd(
     lmm[message.channelId] = model;
     savePersistance();
 
-    if (!process.env.OR_KEY) {
+    if (!config.apis.openrouter_key) {
         message.reply("**err:** OpenRouter API key not set");
         return;
     }
@@ -111,7 +114,7 @@ export async function openRouterCmd(
     const req = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${process.env.OR_KEY}`,
+            'Authorization': `Bearer ${config.apis.openrouter_key}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ model, messages: convo })

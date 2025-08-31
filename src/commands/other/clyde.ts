@@ -4,8 +4,11 @@ import {
     GroupDMChannel,
     Message
 } from "discord.js-selfbot-v13";
+
 import fs from 'fs';
 import path from 'path';
+
+import { config } from "../../config.js";
 
 interface Information {
     id: string;
@@ -283,7 +286,7 @@ export async function clydeCmd(message: Message, userPrompt: string) {
         return;
     }
 
-    if (!process.env.OR_KEY) {
+    if (!config.apis.openrouter_key) {
         message.reply("**Error:** OpenRouter API key not set");
         return;
     }
@@ -350,7 +353,7 @@ export async function clydeCmd(message: Message, userPrompt: string) {
     const req = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${process.env.OR_KEY}`,
+            'Authorization': `Bearer ${config.apis.openrouter_key}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody)

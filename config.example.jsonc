@@ -1,0 +1,14 @@
+{
+    "token": "Your discord token",
+    "prefix": "Prefix", // E.g. $, $sc
+    "shared": [], // Array of user IDs that can execute commands
+    "nitro_sniper": true, // Enable nitro sniper on startup
+    "watchdog": {
+        "channels": [], // Array of channel IDs to watch on startup
+        "format": "txt" // Format to save watched channels (txt or jsonb)
+    },
+    "apis": {
+        "openrouter_key": "Your OpenRouter API key", // For the or and clyde command
+        "github_token": "Your GitHub token" // For the gh command
+    }
+}
