@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { config } from "../../config.js";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 const octokit = new Octokit({
     auth: config.apis.github_token
@@ -14,7 +15,7 @@ export async function githubCommitCmd(message: Message, args: string[]) {
     const username = args[0];
 
     if (!username) {
-        message.reply("**Error:** No GitHub username provided");
+        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No GitHub username provided', '#f38ba8')));
         return;
     }
 
@@ -56,7 +57,7 @@ export async function githubCommitCmd(message: Message, args: string[]) {
 
             page++;
         } catch (err: any) {
-            message.reply(`**Error fetching commits:** ${err.message}`);
+            message.edit(fmtEmbed(message.content, createEmbed('Error', `Error fetching commits: ${err.message}`, '#f38ba8')));
             console.error(err);
     
             return;
@@ -76,7 +77,13 @@ export async function githubCommitCmd(message: Message, args: string[]) {
 
     const emailsText = Array.from(uniqueEmails).map(e => `  - ${e}`).join('\n');
     const namesText = Array.from(uniqueNames).map(n => `  - ${n}`).join('\n');
-    const resultMsg = `**Results:**\n- Unique emails:\n${emailsText}\n- Unique names:\n${namesText}`;
+    const resultMsg = `Results:\n- Unique emails:\n${emailsText}\n- Unique names:\n${namesText}`;
 
-    await message.reply({ content: resultMsg, files: [filePath] });
+    await message.edit({ 
+        content: fmtEmbed(
+            message.content,
+            createEmbed('Results', resultMsg, '#a6e3a1')
+        ), 
+        files: [filePath] 
+    });
 }

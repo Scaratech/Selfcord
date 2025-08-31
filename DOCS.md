@@ -67,9 +67,8 @@ Aliases
 ```
 $alias [-n] <alias> <text>
 
-Example I: $alias test $ip 1.1.1.1 # $test -> $ip 1.1.1.1 (and runs command)
-Example II: $alias meow this is a string # $meow -> this is a string
-Example III: $alias -n meow mrrp -> meow (with no prefix) -> mrrp 
+Example I: $alias meow this is a string # $meow -> this is a string
+Example II: $alias -n meow mrrp -> meow (with no prefix) -> mrrp 
 ```
 
 ### `shared`

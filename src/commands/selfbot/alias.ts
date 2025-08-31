@@ -1,3 +1,4 @@
+import { createEmbed, fmtEmbed } from '../../embed.js';
 import { Message } from 'discord.js-selfbot-v13';
 import fs from 'fs';
 import path from 'path';
@@ -39,7 +40,7 @@ export async function aliasCmd(message: Message, args: string[]) {
     const name = args[0];
 
     if (!name) {
-        message.reply('**Error:** No alias name provided');
+        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No alias name provided', '#f38ba8')));
         return;
     }
 
@@ -63,7 +64,7 @@ export async function aliasCmd(message: Message, args: string[]) {
     }
 
     if (!val) {
-        message.reply('**Error:** No alias value provided');
+        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No alias value provided', '#f38ba8')));
         return;
     }
 
@@ -76,7 +77,7 @@ export async function aliasCmd(message: Message, args: string[]) {
     saveAliases(map);
 
     const prefixNote = noPrefix ? ' (no prefix)' : ' (with prefix)';
-    message.reply(`**Alias set:** \`${name}\` -> \`${val}\`${prefixNote}`);
+    message.edit(fmtEmbed(message.content, createEmbed('Alias', `Alias set ${name} -> ${val}${prefixNote}`, '#a6e3a1')));
 }
 
 export async function invokeAlias(message: Message, command: string): Promise<boolean> {

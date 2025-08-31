@@ -21,14 +21,13 @@ import { clydeCmd, getClydeChannel } from "./commands/other/clyde.js";
 /// OTHER ///
 import { client } from "./client.js";
 import { config, prefix } from "./config.js";
-import { handle } from "./commands/handler.js";
+import { handle } from "./handler.js";
 import "./consoleOverride.js";
 
 /// DEPS ///
 import { Message } from "discord.js-selfbot-v13";
 import chalk from "chalk";
 import stripAnsi from "strip-ansi";
-
 
 client.on("messageCreate", async (message) => {
     if (isEnabled() && message.content) {
@@ -86,6 +85,7 @@ client.on("messageCreate", async (message) => {
     if (!isOwner && !isSharedUser) {
         return;
     }
+
     if (
         isOwner &&
         message.content &&
@@ -226,7 +226,7 @@ client.on("messageUpdate", async (_oldMessage, newMessage) => {
         return;
     }
 
-    await handle(newMessage as Message);
+    // await handle(newMessage as Message);
 });
 
 client.on("messageDelete", async (message) => {

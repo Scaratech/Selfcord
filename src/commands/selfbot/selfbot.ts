@@ -1,11 +1,12 @@
 import { getConsoleOutput } from '../../consoleOverride.js';
 import { client } from '../../client.js';
+import { createEmbed, fmtEmbed } from '../../embed.js';
 import { Message } from 'discord.js-selfbot-v13';
 import { spawn } from 'child_process';
 
 
 export function stopCmd(message: Message): void {
-    message.reply('**Selfcord stopped**');
+    message.edit(fmtEmbed(message.content, createEmbed('Selfcord', 'Selfcord stopped', '#cdd6f4')));
 
     setTimeout(() => {
         process.exit(0);
@@ -13,7 +14,7 @@ export function stopCmd(message: Message): void {
 }
 
 export function restartCmd(message: Message): void {
-    message.reply('**Selfcord restarting**');
+    message.edit(fmtEmbed(message.content, createEmbed('Selfcord', 'Selfcord restarting', '#cdd6f4')));
     
     setTimeout(() => {
         client.destroy();
@@ -40,9 +41,9 @@ export function pingCmd(message: Message): void {
         const end = Date.now();
         const apiLatency = end - start;
         
-        message.reply(`- **API Latency:** \`${apiLatency}ms\`\n- **WS Heartbeat:** \`${wsPing}ms\``);
+        message.edit(fmtEmbed(message.content, createEmbed('Ping', `- API Latency: ${apiLatency}ms\n- WS Heartbeat: ${wsPing}ms`, '#a6e3a1')));
     }).catch(() => {
-        message.reply(`- **WS Heartbeat:** \`${wsPing}ms\`\n- **API Latency:** \`Failed to measure\``);
+        message.edit(fmtEmbed(message.content, createEmbed('Ping', `- WS Heartbeat: ${wsPing}ms\n- API Latency: Failed to measure`, '#f38ba8')));
     });
 }
 

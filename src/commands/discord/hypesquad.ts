@@ -1,21 +1,21 @@
 import { Message } from "discord.js-selfbot-v13";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 import { client } from "../../client.js";
 
 export function setHypesquad(message: Message, house: string) {
     if (house === 'bravery') {
         client.user.setHypeSquad(1);
+        message.edit(fmtEmbed(message.content, createEmbed('Hypesquad', 'Hypesquad house set to bravery', '#cba6f7')));
     } else if (house === 'brilliance') {
-        message.reply("**Hypesquad house set to:** `brilliance`");
         client.user.setHypeSquad(2);
+        message.edit(fmtEmbed(message.content, createEmbed('Hypesquad', 'Hypesquad house set to brilliance', '#eba0ac')));
     } else if (house === 'balance') {
-        message.reply("**Hypesquad house set to:** `balance`");
         client.user.setHypeSquad(3);
-        message.reply("**Hypesquad house set to:** `balance`");
+        message.edit(fmtEmbed(message.content, createEmbed('Hypesquad', 'Hypesquad house set to balance', '#a6e3a1')));
     } else if (house === '--reset') {
         client.user.setHypeSquad(0);
-        message.reply("**Hypesquad house reset**");
+        message.edit(fmtEmbed(message.content, createEmbed('Hypesquad', 'Hypesquad house reset', '#cdd6f4')));
     } else {
-        message.reply("**Usage:** `$hypesquad <<brilliance | balance | bravery> | --reset>`");
-        return;
+        message.edit(fmtEmbed(message.content, createEmbed('Usage', `hypesquad <brilliance | balance | bravery> [--reset]`, '#cdd6f4')));
     }
 }

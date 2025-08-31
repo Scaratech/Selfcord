@@ -3,10 +3,11 @@ import { Message } from "discord.js-selfbot-v13";
 import * as djs from 'discord.js-selfbot-v13';
 import { config, prefix } from "../../config.js";
 import util from 'util';
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export async function jsExec(message: Message, code: string) {
     if (!code) {
-        message.reply("**Usage:** js <JavaScript code>");
+        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $js <JavaScript code>', '#cdd6f4')));
         return;
     }
     try {

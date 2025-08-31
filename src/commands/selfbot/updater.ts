@@ -1,4 +1,5 @@
 import { config, Config } from '../../config.js';
+import { createEmbed, fmtEmbed } from '../../embed.js';
 import { Message } from 'discord.js-selfbot-v13';
 import fs from 'fs';
 import path from 'path';
@@ -32,10 +33,10 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
             const currentConfig = loadConfig();
 
             if (currentConfig.shared.length === 0) {
-                message.reply('**No shared users configured**');
+                message.edit(fmtEmbed(message.content, createEmbed('Shared Users', 'No shared users configured', '#f38ba8')));
             } else {
-                const userList = currentConfig.shared.map(id => `- \`${id}\``).join('\n');
-                message.reply(`**Shared Users:**\n${userList}`);
+                const userList = currentConfig.shared.map(id => `- ${id}`).join('\n');
+                message.edit(fmtEmbed(message.content, createEmbed('Shared Users', `Shared Users:\n${userList}`, '#a6e3a1')));
             }
 
             break;
@@ -44,14 +45,15 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
             const userId = args[1];
 
             if (!userId) {
-                message.reply('**Usage:** `$shared add <user_id>`');
+                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared add <user_id>', '#cdd6f4')));
                 return;
             }
             
             try {
                 const configData = loadConfig();
+
                 if (configData.shared.includes(userId)) {
-                    message.reply('**Error:** User is already shared');
+                    message.edit(fmtEmbed(message.content, createEmbed('Error', 'User is already shared', '#f38ba8')));
                     return;
                 }
                 
@@ -60,9 +62,9 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
 
                 config.shared.push(userId);
                 
-                message.reply(`**Added:** \`${userId}\` **to shared users**`);
+                message.edit(fmtEmbed(message.content, createEmbed('Added', `Added ${userId} to shared users`, '#a6e3a1')));
             } catch (err) {
-                message.reply(`**Error:** ${err.message}`);
+                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
                 console.error('Failed to add user to shared users:', err);
             }
             break;
@@ -71,7 +73,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
             const removeUserId = args[1];
 
             if (!removeUserId) {
-                message.reply('**Usage:** `$shared remove <user_id>`');
+                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared remove <user_id>', '#cdd6f4')));
                 return;
             }
             
@@ -80,7 +82,7 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                 const index = configData.shared.indexOf(removeUserId);
 
                 if (index === -1) {
-                    message.reply('**Error:** User is not in shared list');
+                    message.edit(fmtEmbed(message.content, createEmbed('Error', 'User is not in shared list', '#f38ba8')));
                     return;
                 }
                 
@@ -93,16 +95,16 @@ export async function sharedCmd(message: Message, args: string[]): Promise<void>
                     config.shared.splice(runtimeIndex, 1);
                 }
                 
-                message.reply(`**Removed:** \`${removeUserId}\` **from shared users**`);
+                message.edit(fmtEmbed(message.content, createEmbed('Removed', `Removed: ${removeUserId} from shared users`, '#a6e3a1')));
             } catch (err) {
-                message.reply(`**Error:** ${err.message}`);
+                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
                 console.error('Failed to remove user from shared users:', err);
             }
 
             break;
 
         default:
-            message.reply('**Usage:** `$shared <list|add|remove> [user_id]`');
+            message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $shared <list | add | remove> [user_id]', '#cdd6f4')));
     }
 }
 
@@ -114,7 +116,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
             const nsStatus = args[1]?.toLowerCase();
 
             if (!nsStatus || !['on', 'off'].includes(nsStatus)) {
-                message.reply('**Usage:** `$pre ns <on|off>`');
+                message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $pre ns <on|off>', '#cdd6f4')));
                 return;
             }
             
@@ -123,9 +125,9 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                 configData.nitro_sniper = nsStatus === 'on';
 
                 saveConfig(configData);
-                message.reply(`**Nitro sniper ${nsStatus === 'on' ? 'enabled' : 'disabled'} on startup**`);
+                message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', `Nitro sniper ${nsStatus === 'on' ? 'enabled' : 'disabled'} on startup`, '#a6e3a1')));
             } catch (err) {
-                message.reply(`**Error:** ${err.message}`);
+                message.edit(fmtEmbed(message.content, createEmbed('Error', `Error: ${err.message}`, '#f38ba8')));
                 console.error('Failed to toggle nitro sniper:', err);
             }
             break;
@@ -138,10 +140,10 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const wdConfig = loadConfig();
 
                     if (wdConfig.watchdog.channels.length === 0) {
-                        message.reply('**No watchdog channels configured**');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'No watchdog channels configured', '#f38ba8')));
                     } else {
-                        const channelList = wdConfig.watchdog.channels.map(id => `- \`${id}\``).join('\n');
-                        message.reply(`**Watchdog Channels:**\n${channelList}\n\n**Format:** \`${wdConfig.watchdog.format}\``);
+                        const channelList = wdConfig.watchdog.channels.map(id => `- ${id}`).join('\n');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Watchdog Channels:\n${channelList}\n\nFormat: ${wdConfig.watchdog.format}`, '#a6e3a1')));
                     }
 
                     break;
@@ -150,7 +152,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const channelId = args[2];
 
                     if (!channelId) {
-                        message.reply('**Usage:** `$pre wd add <channel_id>`');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd add <channel_id>', '#cdd6f4')));
                         return;
                     }
                     
@@ -158,15 +160,15 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                         const configData = loadConfig();
 
                         if (configData.watchdog.channels.includes(channelId)) {
-                            message.reply('**Error:** Channel is already in watchdog list');
+                            message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', 'Channel is already in watchdog list', '#f38ba8')));
                             return;
                         }
                         
                         configData.watchdog.channels.push(channelId);
                         saveConfig(configData);
-                        message.reply(`**Added:** \`${channelId}\` **to watchdog channels**`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Added: ${channelId} to watchdog channels`, '#a6e3a1')));
                     } catch (err) {
-                        message.reply(`**Error:** ${err.message}`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
                         console.error('Failed to add channel to watchdog:', err);
                     }
 
@@ -176,7 +178,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const removeChannelId = args[2];
 
                     if (!removeChannelId) {
-                        message.reply('**Usage:** `$pre wd remove <channel_id>`');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd remove <channel_id>', '#cdd6f4')));
                         return;
                     }
                     
@@ -185,15 +187,15 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                         const index = configData.watchdog.channels.indexOf(removeChannelId);
 
                         if (index === -1) {
-                            message.reply('**Error:** Channel is not in watchdog list');
+                            message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'Channel is not in watchdog list', '#f38ba8')));
                             return;
                         }
                         
                         configData.watchdog.channels.splice(index, 1);
                         saveConfig(configData);
-                        message.reply(`**Success:** Removed \`${removeChannelId}\` from watchdog channels`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Removed ${removeChannelId} from watchdog channels`, '#a6e3a1')));
                     } catch (err) {
-                        message.reply(`**Error:** ${err.message}`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
                         console.error('Failed to remove channel from watchdog:', err);
                     }
                     break;
@@ -202,7 +204,7 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
                     const format = args[2]?.toLowerCase();
 
                     if (!format || !['json', 'txt'].includes(format)) {
-                        message.reply('**Usage:** `$pre wd fmt <json|txt>`');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd fmt <json | txt>', '#cdd6f4')));
                         return;
                     }
                     
@@ -211,21 +213,21 @@ export async function preCmd(message: Message, args: string[]): Promise<void> {
 
                         configData.watchdog.format = format as "txt" | "json";
                         saveConfig(configData);
-                        message.reply(`**Success:** Watchdog format set to \`${format}\` for startup`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', `Watchdog format set to ${format} for startup`, '#a6e3a1')));
                     } catch (err) {
-                        message.reply(`**Error:** ${err.message}`);
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Error', `Error: ${err.message}`, '#f38ba8')));
                         console.error('Failed to set watchdog format:', err);
                     }
 
                     break;
 
                 default:
-                    message.reply('**Usage:** `$pre wd <list|add|remove|fmt> [channel_id|format]`');
+                    message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre wd <list | add | remove | fmt> [channel_id|format]', '#cdd6f4')));
             }
 
             break;
 
         default:
-            message.reply('**Usage:** `$pre <ns|wd> [options]`');
+            message.edit(fmtEmbed(message.content, createEmbed('Watchdog - Usage', 'Usage: $pre <ns | wd> [options]', '#cdd6f4')));
     }
 }

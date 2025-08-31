@@ -1,51 +1,51 @@
 /// COMMANDS - DISCORD ///
-import { messageExporter } from "./discord/messageExporter.js";
-import { messasgePurger } from "./discord/messagePurger.js";
-import { genFriendInv } from "./discord/genFriend.js";
-import { nitroSniper } from "./discord/nitroSniper.js";
-import { watchChannel, stopWatch, getActiveWatches } from "./discord/watchdog.js";
-import { setHypesquad } from "./discord/hypesquad.js";
-import { spammer } from "./discord/spammer.js";
+import { messageExporter } from "./commands/discord/messageExporter.js";
+import { messasgePurger } from "./commands/discord/messagePurger.js";
+import { genFriendInv } from "./commands/discord/genFriend.js";
+import { nitroSniper } from "./commands/discord/nitroSniper.js";
+import { watchChannel, stopWatch, getActiveWatches } from "./commands/discord/watchdog.js";
+import { setHypesquad } from "./commands/discord/hypesquad.js";
+import { spammer } from "./commands/discord/spammer.js";
 
 /// COMMANDS - SELFBOT ///
-import { aliasCmd, invokeAlias } from "./selfbot/alias.js";
-import { sharedCmd, preCmd } from "./selfbot/updater.js";
-import { 
-    stopCmd, 
-    restartCmd, 
-    pingCmd, 
-    consoleCmd 
-} from "./selfbot/selfbot.js";
+import { aliasCmd, invokeAlias } from "./commands/selfbot/alias.js";
+import { sharedCmd, preCmd } from "./commands/selfbot/updater.js";
+import {
+    stopCmd,
+    restartCmd,
+    pingCmd,
+    consoleCmd
+} from "./commands/selfbot/selfbot.js";
 
 /// COMMANDS - UTILS ///
-import { edHandler } from "./utils/encDec.js";
-import { hasher } from "./utils/hasher.js";
-import { calc } from "./utils/calc.js";
-import { tzCalc } from "./utils/tzCalc.js";
+import { edHandler } from "./commands/utils/encDec.js";
+import { hasher } from "./commands/utils/hasher.js";
+import { calc } from "./commands/utils/calc.js";
+import { tzCalc } from "./commands/utils/tzCalc.js";
 
 /// COMMANDS - NETWORK ///
-import { ipLookup } from "./network/ip.js";
-import { subdomainScanner } from "./network/subdomainScanner.js";
-import { dnsLookup } from "./network/dns.js";
-import { rdnsLookup } from "./network/rdns.js";
-import { macLookup } from "./network/mac.js";
+import { ipLookup } from "./commands/network/ip.js";
+import { subdomainScanner } from "./commands/network/subdomainScanner.js";
+import { dnsLookup } from "./commands/network/dns.js";
+import { rdnsLookup } from "./commands/network/rdns.js";
+import { macLookup } from "./commands/network/mac.js";
 
 /// COMMANDS - SYS ///
-import { shellExec } from "./sys/shellExec.js";
-import { jsExec } from "./sys/jsExec.js";
-import { sysfetch } from "./sys/sysfetch.js";
+import { shellExec } from "./commands/sys/shellExec.js";
+import { jsExec } from "./commands/sys/jsExec.js";
+import { sysfetch } from "./commands/sys/sysfetch.js";
 
 /// COMMANDS - OTHER ///
-import { openRouterCmd, getLastModel } from "./other/openRouter.js";
-import { clydeCmd } from "./other/clyde.js";
-import { githubCommitCmd } from "./other/githubCommitScraper.js";
-import { phoneNumberLookup } from "./other/phoneNumberLookup.js";
-import { helpCmd } from "./helpCmd.js";
+import { openRouterCmd, getLastModel } from "./commands/other/openRouter.js";
+import { clydeCmd } from "./commands/other/clyde.js";
+import { githubCommitCmd } from "./commands/other/githubCommitScraper.js";
+import { phoneNumberLookup } from "./commands/other/phoneNumberLookup.js";
+import { helpCmd } from "./commands/helpCmd.js";
 
 /// DEPS ///
 import { Message } from "discord.js-selfbot-v13";
 import chalk from "chalk";
-import { prefix } from "../config.js";
+import { prefix } from "./config.js";
 
 export async function handle(message: Message) {
     const args = message.content.slice(prefix.length).trim().split(/\s+/);
@@ -63,7 +63,7 @@ export async function handle(message: Message) {
     }
 
     if (!command) {
-        message.reply(helpCmd());
+        helpCmd(message);
         return;
     }
 
@@ -78,7 +78,7 @@ export async function handle(message: Message) {
     try {
         switch (command) {
             case 'help':
-                message.reply(helpCmd());
+                helpCmd(message);
                 break;
 
             /// DISCORD ///
@@ -181,17 +181,17 @@ export async function handle(message: Message) {
                 stopCmd(message);
                 break;
             }
-        
+
             case 'restart': {
                 restartCmd(message);
                 break;
             }
-              
+
             case 'ping': {
                 pingCmd(message);
                 break;
             }
-              
+
             case 'console': {
                 consoleCmd(message);
                 break;

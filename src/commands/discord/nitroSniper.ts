@@ -1,6 +1,8 @@
+import { createEmbed, fmtEmbed } from "../../embed.js";
+import { config } from "../../config.js";
 import { Message } from "discord.js-selfbot-v13";
 import axios from "axios";
-import { config } from "../../config.js";
+
 
 let nsStatus: boolean | null = null;
 
@@ -13,7 +15,7 @@ function init(): boolean {
 }
 
 export function isEnabled(): boolean {
-    const status = init();;
+    const status = init();
     return status;
 }
 
@@ -21,7 +23,11 @@ export function nitroSniper(message: Message, status: string) {
     init();
     
     if (status === undefined) {
-        message.reply('**Usage:** `ns <on|off>`\n**Current status:** ' + (nsStatus ? 'Enabled' : 'Disabled'));
+        const body = `
+        Usage: ns <on|off>
+        Current status: ${nsStatus ? 'Enabled' : 'Disabled'}
+        `
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', body, '#cdd6f4')));
         return;
     }
 
@@ -30,14 +36,14 @@ export function nitroSniper(message: Message, status: string) {
     } else if (status === 'off') {
         nsStatus = false;
     } else {
-        message.reply('**Usage:** `nitro <on|off>`');
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Usage: nitro <on|off>', '#cdd6f4')));
         return;
     }
 
     if (nsStatus) {
-        message.reply('**Nitro sniper toggled:** `on`');
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Nitro sniper toggled on', '#a6e3a1')));
     } else {
-        message.reply('**Nitro sniper toggled:** `off`');
+        message.edit(fmtEmbed(message.content, createEmbed('Nitro Sniper', 'Nitro sniper toggled off', '#f38ba8#f38ba8')));
     }
 }
 

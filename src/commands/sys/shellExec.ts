@@ -1,9 +1,10 @@
 import { Message } from "discord.js-selfbot-v13";
 import { exec } from "child_process";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export function shellExec(message: Message, cmd: string) {
     if (!cmd) {
-        message.reply("**Usage:** \`sh <command>\`");
+        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $sh <command>', '#cdd6f4')));
         return;
     }
 

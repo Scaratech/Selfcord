@@ -1,3 +1,4 @@
+import { createEmbed, fmtEmbed } from "../../embed.js";
 import { Message } from "discord.js-selfbot-v13";
 
 type Type = 'b64' | 'uri' | 'hex';
@@ -36,12 +37,12 @@ export function edHandler(
 ) {
     try {
         if (type === 'encoded') {
-            message.reply('**Result:** ' + `\`${encode(target, msg)}\``);
+            message.edit(fmtEmbed(message.content, createEmbed('Encoded', `${encode(target, msg)}`, '#a6e3a1')));
         } else {
-            message.reply('**Result:** ' + `\`${decode(target, msg)}\``);
+            message.edit(fmtEmbed(message.content, createEmbed('Decoded', `${decode(target, msg)}`, '#a6e3a1')));
         }
     } catch (error: any) {
-        message.reply(`**Error:** ${error.message}`);
+        message.edit(fmtEmbed(message.content, createEmbed('Error', `${error.message}`, '#f38ba8')));
         console.error(`Error encoding/decoding: ${error.message}`);
     }
 }

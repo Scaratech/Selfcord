@@ -1,5 +1,6 @@
 import { Message, Collection } from "discord.js-selfbot-v13";
 import { client } from "../../client.js";
+import { createEmbed, fmtEmbed } from "../../embed.js";
 
 type PurgeTarget = 'at' | number;
 
@@ -9,7 +10,7 @@ export async function messasgePurger(message: Message, target: string, shadow: b
         
         if (parsedTarget === null) {
             if (!shadow) {
-                await message.reply('**Usage**: \`purge <num>|at [--shadow]\`');
+                await message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $purge <num>|at [--shadow]', '#cdd6f4')));
             }
             return;
         }
@@ -23,7 +24,7 @@ export async function messasgePurger(message: Message, target: string, shadow: b
         console.error('Purge error:', error);
 
         if (!shadow) {
-            await message.channel.send('**Failed to purge messages**');
+            await message.edit(fmtEmbed(message.content, createEmbed('Error', 'Failed to purge messages', '#f38ba8')));
         }
     }
 }
@@ -60,7 +61,7 @@ async function purgeAllMessages(message: Message, shadow: boolean): Promise<void
     } while (fetched.size === 100);
 
     if (!shadow) {
-        await message.channel.send(`**Purged ${totalDeleted} messages**`);
+        await message.edit(fmtEmbed(message.content, createEmbed('Purged', `Purged ${totalDeleted} messages`, '#a6e3a1')));
     }
 }
 
@@ -79,6 +80,6 @@ async function purgeNumericMessages(message: Message, count: number, shadow: boo
     }
 
     if (!shadow) {
-        await message.channel.send(`**Purged ${deletedCount} messages** `);
+        await message.edit(fmtEmbed(message.content, createEmbed('Purged', `Purged ${deletedCount} messages`, '#a6e3a1')));
     }
 }
