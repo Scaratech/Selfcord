@@ -1,7 +1,6 @@
 import { Message } from "discord.js-selfbot-v13";
 import fs from "fs";
 import path from "path";
-import { createEmbed, fmtEmbed } from "../../embed.js";
 
 interface MessageData {
     id: string;
@@ -22,7 +21,7 @@ export async function messageExporter(message: Message, target: string, shadow: 
 
         if (!['json', 'txt'].includes(target)) {
             if (!shadow) {
-                return message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: $export <json|txt> [--shadow]', '#cdd6f4')));
+                return message.reply("**Usage:** `export <json|txt> [--shadow]`");
             }
 
             return;
@@ -76,14 +75,14 @@ export async function messageExporter(message: Message, target: string, shadow: 
         }
 
         if (!shadow) {
-            await msg.edit(fmtEmbed(msg.content, createEmbed('Exported', `Exported ${all.length} messages`, '#a6e3a1')));
+            await msg.edit(`**Exported ${all.length} messages**`);
             msg.delete();
         }
     } catch (error) {
         console.error('Export error:', error);
 
         if (!shadow) {
-            await msg.edit(fmtEmbed(msg.content, createEmbed('Error', 'Failed to export messages', '#f38ba8')));
+            await msg.edit("**Error:** Failed to export messages");
             msg.delete();
         }
     }

@@ -3,7 +3,7 @@ import { createEmbed, fmtEmbed } from "../../embed.js";
 
 export async function ipLookup(message: Message, target: string) {
     if (!target) {
-        message.reply("**Usage:** \`ip <ip>\`");
+        message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: ip <ip>', '#cdd6f4')));
         return;
     }
 

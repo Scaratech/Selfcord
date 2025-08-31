@@ -1,5 +1,4 @@
 import { Message } from "discord.js-selfbot-v13";
-import { createEmbed, fmtEmbed } from "../../embed.js";
 import { client } from "../../client.js";
 
 export async function genFriendInv(message: Message) {
@@ -8,6 +7,6 @@ export async function genFriendInv(message: Message) {
     if (invite) {
         message.reply(`https://discord.gg/${invite.code}`);
     } else {
-        message.edit(fmtEmbed(message.content, createEmbed('Error', 'Failed to create friend invite', '#f38ba8')));
+        message.reply("**Error:** Failed to create friend invite");
     }
 }

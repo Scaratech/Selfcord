@@ -46,6 +46,7 @@ import { helpCmd } from "./commands/helpCmd.js";
 import { Message } from "discord.js-selfbot-v13";
 import chalk from "chalk";
 import { prefix } from "./config.js";
+import { createEmbed, fmtEmbed } from "./embed.js";
 
 export async function handle(message: Message) {
     const args = message.content.slice(prefix.length).trim().split(/\s+/);
@@ -115,19 +116,20 @@ export async function handle(message: Message) {
                     const activeWatches = getActiveWatches();
 
                     if (activeWatches.length === 0) {
-                        message.reply('**No active watches**');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', 'No active watches', '#cdd6f4')));
                     } else {
-                        message.reply([
-                            '**Watches:**',
+                        const watchList = [
+                            'Watches:',
                             ...activeWatches.map(id => `- <#${id}>`)
-                        ].join('\n'));
+                        ].join('\n');
+                        message.edit(fmtEmbed(message.content, createEmbed('Watchdog', watchList, '#a6e3a1')));
                     }
 
                     break;
                 }
 
                 if (!channelId) {
-                    message.reply('**Usage**: `wd <CHANNEL_ID> <txt|json> [--stop | --list]`');
+                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: wd <CHANNEL_ID> <txt|json> [--stop | --list]', '#cdd6f4')));
                     break;
                 }
 
@@ -137,7 +139,7 @@ export async function handle(message: Message) {
                 }
 
                 if (!format) {
-                    message.reply('**Usage**: `wd <CHANNEL_ID> <txt|json> [--stop | --list]`');
+                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: wd <CHANNEL_ID> <txt|json> [--stop | --list]', '#cdd6f4')));
                     break;
                 }
 
@@ -204,7 +206,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.reply("**Usage:** `enc <b64 | uri | hex> <message>`");
+                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: enc <b64 | uri | hex> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -218,7 +220,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.reply("**Usage:** `dec <b64 | uri | hex> <message>`");
+                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: dec <b64 | uri | hex> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -232,7 +234,7 @@ export async function handle(message: Message) {
                 const msg = args.slice(1).join(' ');
 
                 if (!type || !msg) {
-                    message.reply("**Usage:** `hash <sha1 | sha256 | md5> <message>`");
+                    message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: hash <sha1 | sha256 | md5> <message>', '#cdd6f4')));
                     break;
                 }
 
@@ -332,7 +334,7 @@ export async function handle(message: Message) {
                     const lastModel = getLastModel(message.channelId);
 
                     if (!lastModel) {
-                        message.reply("**Error:** No model specified and no previous model found for this channel. Use: `or <model> \"prompt\"`");
+                        message.edit(fmtEmbed(message.content, createEmbed('Error', 'No model specified and no previous model found for this channel. Use: or <model> "prompt"', '#f38ba8')));
                         break;
                     }
 
@@ -340,7 +342,7 @@ export async function handle(message: Message) {
                     break;
                 }
 
-                message.reply("**Error:** Invalid or command format. Use: `or <model> \"prompt\" [\"system\"]` or `or \"prompt\"` (uses last model)");
+                message.edit(fmtEmbed(message.content, createEmbed('Error', 'Invalid or command format. Use: or <model> "prompt" ["system"] or or "prompt" (uses last model)', '#f38ba8')));
                 break;
             }
 
@@ -363,10 +365,10 @@ export async function handle(message: Message) {
             /////////////
 
             default:
-                message.reply(`**Unknown command**: \`${command}\``);
+                message.edit(fmtEmbed(message.content, createEmbed('Error', `Unknown command: ${command}`, '#f38ba8')));
         }
     } catch (err) {
         console.error(`Command failed: ${err.message}`);
-        message.reply(`**Error:** ${err.message}`);
+        message.edit(fmtEmbed(message.content, createEmbed('Error', err.message, '#f38ba8')));
     }
 }

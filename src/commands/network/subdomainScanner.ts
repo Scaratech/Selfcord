@@ -1,15 +1,13 @@
 import { Message } from "discord.js-selfbot-v13";
 import { createEmbed, fmtEmbed } from "../../embed.js";
 
-let msg: Message;
-
 export async function subdomainScanner(message: Message, target: string) {
     if (!target) {
         message.edit(fmtEmbed(message.content, createEmbed('Usage', 'Usage: sds <domain>', '#cdd6f4')));
         return;
     }
 
-    msg = await message.reply('**Searching...**');
+    let msg = await message.edit(fmtEmbed(message.content, createEmbed('Searching', 'Searching...', '#cdd6f4')));
 
     const url = `https://crt.sh/?q=%25.${target}&output=json`;
     let req: Response;
