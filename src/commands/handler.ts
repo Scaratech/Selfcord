@@ -39,6 +39,7 @@ import { sysfetch } from "./sys/sysfetch.js";
 import { openRouterCmd, getLastModel } from "./other/openRouter.js";
 import { clydeCmd } from "./other/clyde.js";
 import { githubCommitCmd } from "./other/githubCommitScraper.js";
+import { phoneNumberLookup } from "./other/phoneNumberLookup.js";
 import { helpCmd } from "./helpCmd.js";
 
 /// DEPS ///
@@ -345,6 +346,12 @@ export async function handle(message: Message) {
 
             case 'gh': {
                 await githubCommitCmd(message, args);
+                break;
+            }
+
+            case 'phone': {
+                const phoneNumber = args.join(' ');
+                await phoneNumberLookup(message, phoneNumber);
                 break;
             }
 

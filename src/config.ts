@@ -16,6 +16,7 @@ export interface Config {
     apis: {
         openrouter_key: string;
         github_token: string;
+        numverify_key: string;
     };
 }
 
@@ -48,7 +49,8 @@ export const config: Config = {
     },
     apis: jsonConfig.apis || {
         openrouter_key: process.env.OR_KEY || "",
-        github_token: process.env.GITHUB_TOKEN || ""
+        github_token: process.env.GITHUB_TOKEN || "",
+        numverify_key: process.env.NUMVERIFY_KEY || ""
     }
 };
 

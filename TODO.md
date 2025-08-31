@@ -7,8 +7,6 @@ $json m <message_id>
 $json e <message_id>
 
 $catbox
-
-$phone <phone_number>
 ```
 
 - Embeds using https://benny.fun/embed

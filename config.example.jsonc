@@ -9,6 +9,7 @@
     },
     "apis": {
         "openrouter_key": "Your OpenRouter API key", // For the or and clyde command
-        "github_token": "Your GitHub token" // For the gh command
+        "github_token": "Your GitHub token", // For the gh command
+        "numverify_key": "Your Numverify API key" // For the phone lookup command
     }
 }

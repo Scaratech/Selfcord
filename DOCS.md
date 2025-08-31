@@ -243,6 +243,13 @@ $gh <username>
 Example: $gh brandonhilkert
 ```
 
+### `phone`
+Looks up info on a phone number
+```
+$phone <phone_number>
+Example: +1 (305) 205-2475
+```
+
 ### `or`
 Have chats with AI using OpenRouter
 ```
