@@ -29,6 +29,7 @@ import { subdomainScanner } from "./commands/network/subdomainScanner.js";
 import { dnsLookup } from "./commands/network/dns.js";
 import { rdnsLookup } from "./commands/network/rdns.js";
 import { macLookup } from "./commands/network/mac.js";
+import { portScanner } from "./commands/network/portScanner.js";
 
 /// COMMANDS - SYS ///
 import { shellExec } from "./commands/sys/shellExec.js";
@@ -290,6 +291,14 @@ export async function handle(message: Message) {
                 break;
             }
 
+            case 'ps': {
+                const target = args[0];
+                const timeout = parseInt(args[1]);
+                const ports = args.slice(2).map(Number);
+
+                await portScanner(message, target, ports, timeout);
+                break;
+            }
             ///////////////
 
             /// SYS ///

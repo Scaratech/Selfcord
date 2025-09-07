@@ -206,6 +206,14 @@ $sds <domain>
 Example: $sds nebulaservices.org
 ```
 
+
+### `ps`
+Port scanner
+```
+$ps <ip> <timeout> [ports]
+Example: $ps 1.1.1.1 3000 80 443 # Checks if ports 80 and 443 are open on 1.1.1.1 with a 3000ms timeout (3 seconds)
+```
+
 ## System Related
 
 ### `js`
