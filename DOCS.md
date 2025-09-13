@@ -61,6 +61,13 @@ $spam <amount> <msg>
 Example: $spam 5 meow meow meow
 ```
 
+### `repeat`
+Repeat a message a certian amount of times
+```
+$repeat <amount> <delay> <msg>
+Example: $repeat 5 100 meow meow # Says meow meow 5 times in 100ms intervals
+```
+
 ## Selfbot Related
 ### `alias`
 Aliases
@@ -152,7 +159,7 @@ Example I: $dec b64 bWVvdyBtZW93
 Example II: $dec uri https%3A%2F%2Fscaratek.dev
 ```
 
-## `hash`
+### `hash`
 Hasher
 ```
 $hash <sha1 | sha256 | md5> <msg>
@@ -161,12 +168,21 @@ Example I: $hash sha1 meow
 Example II: $hash md5 woaw
 ```
 
-## `tz`
+### `tz`
 Timezone converter
 
 ```
 $tz <tz1> <tz2>
 Example: $tz est pst
+```
+
+### `temp`
+Temperature converter
+```
+$temp <f2c | c2f> <temp>
+
+Example: $temp f2c 70
+Example II: $temp c2f 21.1
 ```
 
 ## Network Related

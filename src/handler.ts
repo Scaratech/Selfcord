@@ -6,6 +6,7 @@ import { nitroSniper } from "./commands/discord/nitroSniper.js";
 import { watchChannel, stopWatch, getActiveWatches } from "./commands/discord/watchdog.js";
 import { setHypesquad } from "./commands/discord/hypesquad.js";
 import { spammer } from "./commands/discord/spammer.js";
+import { repeater } from "./commands/discord/repeater.js";
 
 /// COMMANDS - SELFBOT ///
 import { aliasCmd, invokeAlias } from "./commands/selfbot/alias.js";
@@ -22,6 +23,7 @@ import { edHandler } from "./commands/utils/encDec.js";
 import { hasher } from "./commands/utils/hasher.js";
 import { calc } from "./commands/utils/calc.js";
 import { tzCalc } from "./commands/utils/tzCalc.js";
+import { tempCalc } from "./commands/utils/tempCalc.js";
 
 /// COMMANDS - NETWORK ///
 import { ipLookup } from "./commands/network/ip.js";
@@ -161,6 +163,15 @@ export async function handle(message: Message) {
                 spammer(message, amount, msg);
                 break;
             }
+
+            case 'repeat': {
+                const amount = parseInt(args[0]);
+                const delay = parseInt(args[1]);
+                const msg = args.slice(2).join(' ');
+
+                repeater(message, amount, delay, msg);
+                break;
+            }
             ////////////
 
 
@@ -254,6 +265,14 @@ export async function handle(message: Message) {
                 const tz2 = args[1];
 
                 tzCalc(message, tz1, tz2);
+                break;
+            }
+
+            case 'temp': {
+                const type = args[0];
+                const temp = args[1];
+
+                tempCalc(message, type, temp);
                 break;
             }
 
